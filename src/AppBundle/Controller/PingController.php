@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class PingController
 {
     /**
-     * @Route("/Ping/", name="Ping")
+     * @Route("/PingS/", name="Ping")
      */
     public function pingAction()
     {
