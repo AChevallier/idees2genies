@@ -1,0 +1,15 @@
+api_homepage:
+    path:     /
+    defaults: { _controller: ApiBundle:Default:index }
+
+api_ping:
+    path:     /ping
+    defaults: { _controller: ApiBundle:Ping:index }
+
+api_user:
+    path:     /user
+    defaults: { _controller: ApiBundle:User:index }
+
+api_user_add:
+    path:     /user/add
+    defaults: { _controller: ApiBundle:User:add }
