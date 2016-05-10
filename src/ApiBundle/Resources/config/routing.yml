@@ -13,3 +13,11 @@ api_user:
 api_user_add:
     path:     /user/add
     defaults: { _controller: ApiBundle:User:add }
+
+api_user_post:
+    path:     /user/post
+    defaults: { _controller: ApiBundle:User:post }
+
+api_user_get:
+    path:     /user/get/{name}
+    defaults: { _controller: ApiBundle:User:get }
