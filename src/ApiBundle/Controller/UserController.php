@@ -48,32 +48,16 @@ class UserController extends Controller
 
         $params = array();
         $content = $this->get("request")->getContent();
-        if (!empty($content))
-        {
+        if (!empty($content)) {
             $params = json_decode($content, true);
         }
 
-        $name = $params['name'];
-
-        /*
-        $tableResponse = array();
-        $tableResponse[] = array(
-            'name' => $name,
-            'firstname' => 'Bnjour',
-        );
-
-        $reponse = new JsonResponse($tableResponse);
-        $reponse->headers->set('Access-Control-Allow-Origin', 'http://localhost:3000');
-        $reponse->headers->set('Access-Control-Allow-Headers', 'Content-Type');
-*/
-
-        $arr = array('name' => $name, 'firstName' => 'Bonjour');
+        $arr = array('name' => $params['name'], 'firstName' => 'Bonjour');
         $reponse = json_encode($arr);
 
         $object = new JsonResponse($reponse);
         $object->headers->set('Access-Control-Allow-Origin', 'http://localhost:3000');
         $object->headers->set('Access-Control-Allow-Headers', 'Content-Type');
-
 
         return $object;
     }
