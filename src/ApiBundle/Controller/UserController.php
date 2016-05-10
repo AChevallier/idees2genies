@@ -42,19 +42,24 @@ class UserController extends Controller
         $em->flush();
 
         return new Response("Utilisateur ajouté");
-
     }
 
     public function postAction(Request $request){
 
         $name = $request->request->get('name');
+        $reponse = new JsonResponse();
+        $reponse -> setData(array(
+            'name' => $name,
+        ));
+        $reponse->headers->set('Access-Control-Allow-Origin', 'http://localhost:3000');
+
         //$firstName = $request->request->get('firstName');
         //$header = $request->headers->get('APIkey');
 
         //$valeur = $firstName." ".$name." ".$header;
 
-        $reponse = new Response($name);
-        $reponse->headers->set('Access-Control-Allow-Origin', 'http://localhost:3000');
+
+
 
         return $reponse;
     }
