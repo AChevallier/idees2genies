@@ -50,12 +50,13 @@ class UserController extends Controller
         $content = $this->get("request")->getContent();
         if (!empty($content))
         {
-            $params = json_decode($content, true); // 2nd param to get as array
+            $params = json_decode($content, true);
         }
 
         $reponse = new JsonResponse();
         $reponse -> setData(array(
             'name' => $params['name'],
+            'firstname' => 'Bnjour',
         ));
         $reponse->headers->set('Access-Control-Allow-Origin', 'http://localhost:3000');
         $reponse->headers->set('Access-Control-Allow-Headers', 'Content-Type');
