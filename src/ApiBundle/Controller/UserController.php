@@ -53,27 +53,14 @@ class UserController extends Controller
             $params = json_decode($content, true); // 2nd param to get as array
         }
 
+        $reponse = new JsonResponse();
+        $reponse -> setData(array(
+            'name' => $params['name'],
+        ));
+        $reponse->headers->set('Access-Control-Allow-Origin', 'http://localhost:3000');
+        $reponse->headers->set('Access-Control-Allow-Headers', 'Content-Type');
 
-
-        //$data = json_decode($request->getContent(), true);
-
-
-        //$name = $request->request->get('name');
-        //$reponse = new JsonResponse();
-        //$reponse -> setData(array(
-        //    'name' => $name,
-        //));
-        //$reponse->headers->set('Access-Control-Allow-Origin', 'http://localhost:3000');
-
-        //$firstName = $request->request->get('firstName');
-        //$header = $request->headers->get('APIkey');
-
-        //$valeur = $firstName." ".$name." ".$header;
-
-
-
-
-        return new JsonResponse($params);
+        return $reponse;
     }
 
     public function getAction($name){
