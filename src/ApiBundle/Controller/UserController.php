@@ -45,19 +45,20 @@ class UserController extends Controller
     }
 
     public function postAction(Request $request){
-
+        
         $params = array();
         $content = $this->get("request")->getContent();
         if (!empty($content)) {
             $params = json_decode($content, true);
         }
 
-        $arr = array('name' => $params['name'], 'firstName' => 'Bonjour');
-        $reponse = json_encode($arr);
+        $arr = array('name' => $params['name'], 'firstName' => $params['firstName']);
+        $reponse = json_encode($arr,JSON_UNESCAPED_UNICODE);
 
         $object = new JsonResponse($reponse);
         $object->headers->set('Access-Control-Allow-Origin', 'http://localhost:3000');
         $object->headers->set('Access-Control-Allow-Headers', 'Content-Type');
+        $object->headers->set('Content-Type', 'application/json; charset=utf-8');
 
         return $object;
     }
