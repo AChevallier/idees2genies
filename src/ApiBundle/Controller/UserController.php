@@ -53,9 +53,11 @@ class UserController extends Controller
             $params = json_decode($content, true);
         }
 
+        $name = $params['name'];
+
         $reponse = new JsonResponse();
         $reponse -> setData(array(
-            'name' => $params['name'],
+            'name' => $name,
             'firstname' => 'Bnjour',
         ));
         $reponse->headers->set('Access-Control-Allow-Origin', 'http://localhost:3000');
