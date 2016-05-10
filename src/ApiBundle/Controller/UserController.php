@@ -13,19 +13,21 @@ class UserController extends Controller
     public function indexAction()
     {
         $repository = $this->getDoctrine()->getRepository('ApiBundle:User');
-
         $users = $repository->findAll();
+        $tableUsers = array();
 
-        $response = array();
     	foreach ($users as $user) {
-        	$response[] = array(
+            $tableUsers[] = array(
         		'id' => $user->getId(),
             	'name' => $user->getName(),
             	'firstName' => $user->getFirstName(),
         	);
     	}
 
-        return new JsonResponse($response);
+        $reponse = new JsonResponse($tableUsers);
+        $reponse->headers->set('Access-Control-Allow-Origin', 'http://localhost:3000');
+
+        return $reponse;
     }
 
     public function addAction()
@@ -46,12 +48,15 @@ class UserController extends Controller
     public function postAction(Request $request){
 
         $name = $request->request->get('name');
-        $firstName = $request->request->get('firstName');
-        $header = $request->headers->get('APIkey');
+        //$firstName = $request->request->get('firstName');
+        //$header = $request->headers->get('APIkey');
 
-        $valeur = $firstName." ".$name." ".$header;
+        //$valeur = $firstName." ".$name." ".$header;
 
-        return new Response($valeur);
+        $reponse = new Response($name);
+        $reponse->headers->set('Access-Control-Allow-Origin', 'http://localhost:3000');
+
+        return $reponse;
     }
 
     public function getAction($name){

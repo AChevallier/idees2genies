@@ -13,6 +13,8 @@ class PingController extends Controller
         $reponse -> setData(array(
                 'date' => date(("d-m-Y G:i:s"))
             ));
+
+        $reponse->headers->set('Access-Control-Allow-Origin', 'http://localhost:3000');
         return $reponse;
     }
 }
