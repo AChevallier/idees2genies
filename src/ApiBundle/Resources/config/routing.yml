@@ -18,6 +18,6 @@ api_user_post:
     path:     /user/post
     defaults: { _controller: ApiBundle:User:post }
 
-api_user_get:
-    path:     /user/get/{name}
-    defaults: { _controller: ApiBundle:User:get }
+api_user_login:
+    path:     /user/login
+    defaults: { _controller: ApiBundle:User:login }
