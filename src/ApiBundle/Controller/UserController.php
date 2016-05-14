@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use ApiBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
 class UserController extends Controller
@@ -98,14 +99,14 @@ class UserController extends Controller
 
                 }
                 catch(Exception $ex){
-                    throw new Exception("Une erreur interne s'est produite.");
+                    throw new NotFoundHttpException('Une erreur interne s\'est produite.');
                 }
             }
             else{
-                throw new Exception("Le login ou le mot de passe est incorrect.");
+                throw new NotFoundHttpException('Le login ou le mot de passe est incorrect.');
             }
         }else{
-            throw new Exception("Veuillez envoyer le login et le mot de passe.");
+            throw new NotFoundHttpException('Veuillez renseigner le login et le mot de passe.');
         }
 
         return new JsonResponse($reponse);
