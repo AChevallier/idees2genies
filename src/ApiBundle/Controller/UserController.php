@@ -12,6 +12,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserController extends Controller
 {
+
+    // Fonction homePage
     public function indexAction()
     {
         $repository = $this->getDoctrine()->getRepository('ApiBundle:User');
@@ -33,37 +35,46 @@ class UserController extends Controller
         return $reponse;
     }
 
-    public function addAction()
+    // Fonction qui ajoute un utilisateur
+    public function addAction(Request $request)
     {
+        $token = $request->headers->get('token');
+
         $em = $this->getDoctrine()->getEntityManager();
+        $repository = $em->getRepository('ApiBundle:User');
+        $user = $repository->findOneBy(array('token' => $token));
 
-        $a = new User();
-        $a->setFirstName("Marie");
-        $a->setName("GEFFLOT");
+        if($user && $user->getAdministrator() == true){
+            $data = json_decode($request->getContent(), true);
 
-        $em->persist($a);
-        $em->flush();
+            if(!empty(isset($data['name'])) && !empty(isset($data['firstName'])) && !empty(isset($data['email'])) && !empty(isset($data['password'])) && ($data['administrator'] == "1" || $data['administrator'] == "0") && isset($data['administrator'])){
+                if(!$user = $repository->findOneBy(array('email' => $data['email']))){
+                    $a = new User();
+                    $a->setFirstName($data['firstName']);
+                    $a->setName($data['name']);
+                    $a->setEmail($data['email']);
+                    $a->setPassword(password_hash($data['password'],PASSWORD_BCRYPT));
+                    $a->setAdministrator($data['administrator']);
 
-        return new Response("Utilisateur ajouté");
-    }
+                    $em->persist($a);
+                    $em->flush();
 
-    public function postAction(Request $request){
+                    $user = $repository->findOneBy(array('email' => $data['email']));
+                    $arr = array('id' => $user->getId(), 'name' => $user->getName(), 'firstName' => $user->getFirstName(), 'email' => $user->getEmail());
+                    $reponse = json_encode($arr,JSON_UNESCAPED_UNICODE);
 
-        $params = array();
-        $content = $this->get("request")->getContent();
-        if (!empty($content)) {
-            $params = json_decode($content, true);
+                    $message = "L'utilisateur a été créé.";
+                }else{
+                    throw new NotFoundHttpException('L\'utilisateur existe déjà.');
+                }
+            }else{
+                throw new NotFoundHttpException('Paramètre(s) manquant(s).');
+            }
+
+        }else{
+            throw new NotFoundHttpException('Vous n\'avez pas l\'autorisation nécessaire.');
         }
-
-        $arr = array('name' => $params['name'], 'firstName' => $params['firstName']);
-        $reponse = json_encode($arr,JSON_UNESCAPED_UNICODE);
-
-        $object = new JsonResponse($reponse);
-        $object->headers->set('Access-Control-Allow-Origin', 'http://localhost:3000');
-        $object->headers->set('Access-Control-Allow-Headers', 'Content-Type');
-        $object->headers->set('Content-Type', 'application/json; charset=utf-8');
-
-        return $object;
+        return new JsonResponse($reponse);
     }
 
     // Fonction qui authentifie l'utilisateur
@@ -108,7 +119,6 @@ class UserController extends Controller
         }else{
             throw new NotFoundHttpException('Veuillez renseigner le login et le mot de passe.');
         }
-
         return new JsonResponse($reponse);
     }
 }

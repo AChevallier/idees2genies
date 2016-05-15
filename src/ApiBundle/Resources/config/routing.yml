@@ -26,14 +26,12 @@ api_user:
 api_user_add:
     path:     /user/add
     defaults: { _controller: ApiBundle:User:add }
-
-api_user_post:
-    path:     /user/post
-    defaults: { _controller: ApiBundle:User:post }
+    methods:  [POST]
 
 api_user_login:
     path:     /user/login
     defaults: { _controller: ApiBundle:User:login }
+    methods:  [POST]
 
 #------------------------------------------------------
 # Community Controller
@@ -46,3 +44,4 @@ api_community:
 api_community_add:
     path:     /community/add
     defaults: { _controller: ApiBundle:Community:add }
+    methods:  [POST]
