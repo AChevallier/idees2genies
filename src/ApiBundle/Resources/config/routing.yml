@@ -1,10 +1,23 @@
+
+#------------------------------------------------------
+# Homepage Controller
+#------------------------------------------------------
+
 api_homepage:
     path:     /
     defaults: { _controller: ApiBundle:Default:index }
 
+#------------------------------------------------------
+# Ping Controller
+#------------------------------------------------------
+
 api_ping:
     path:     /ping
     defaults: { _controller: ApiBundle:Ping:index }
+
+#------------------------------------------------------
+# User Controller
+#------------------------------------------------------
 
 api_user:
     path:     /user
@@ -21,3 +34,15 @@ api_user_post:
 api_user_login:
     path:     /user/login
     defaults: { _controller: ApiBundle:User:login }
+
+#------------------------------------------------------
+# Community Controller
+#------------------------------------------------------
+
+api_community:
+    path:     /community
+    defaults: { _controller: ApiBundle:Community:index }
+
+api_community_add:
+    path:     /community/add
+    defaults: { _controller: ApiBundle:Community:add }
