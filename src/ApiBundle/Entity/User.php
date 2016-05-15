@@ -65,6 +65,13 @@ class User
     private $valideToken;
 
     /**
+     * @var Administrator
+     *
+     * @ORM\Column(name="administrator", type="boolean")
+     */
+    private $administrator;
+
+    /**
      * Get id
      *
      * @return integer 
@@ -210,6 +217,29 @@ class User
     public function getValideToken()
     {
         return $this->valideToken;
+    }
+
+    /**
+     * Get administrator
+     *
+     * @return boolean
+     */
+    public function getAdministrator()
+    {
+        return $this->administrator;
+    }
+
+    /**
+     * Set name
+     *
+     * @param boolean $administrator
+     * @return User
+     */
+    public function setAdministrator($administrator)
+    {
+        $this->administrator = $administrator;
+
+        return $this;
     }
 
 }
