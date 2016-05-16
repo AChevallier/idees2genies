@@ -13,7 +13,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class UserController extends Controller
 {
 
-    // Fonction homePage
+    // Fonction homePage de user
     public function indexAction()
     {
         $repository = $this->getDoctrine()->getRepository('ApiBundle:User');
@@ -29,7 +29,9 @@ class UserController extends Controller
         	);
     	}
 
-        $reponse = new JsonResponse($tableUsers);
+        $reponse = json_encode($tableUsers,JSON_UNESCAPED_UNICODE);
+
+        $reponse = new Response($reponse);
         $reponse->headers->set('Access-Control-Allow-Origin', 'http://localhost:3000');
 
         return $reponse;
@@ -44,33 +46,40 @@ class UserController extends Controller
         $repository = $em->getRepository('ApiBundle:User');
         $user = $repository->findOneBy(array('token' => $token));
 
-        if($user && $user->getAdministrator() == true){
-            $data = json_decode($request->getContent(), true);
+        if($user){
 
-            if(!empty(isset($data['name'])) && !empty(isset($data['firstName'])) && !empty(isset($data['email'])) && !empty(isset($data['password'])) && ($data['administrator'] == "1" || $data['administrator'] == "0") && isset($data['administrator'])){
-                if(!$user = $repository->findOneBy(array('email' => $data['email']))){
-                    $a = new User();
-                    $a->setFirstName($data['firstName']);
-                    $a->setName($data['name']);
-                    $a->setEmail($data['email']);
-                    $a->setPassword(password_hash($data['password'],PASSWORD_BCRYPT));
-                    $a->setAdministrator($data['administrator']);
+            $valideToken = $user->getValideToken();
+            $date = new \DateTime();
 
-                    $em->persist($a);
-                    $em->flush();
+            if(($valideToken > $date) && ($user->getAdministrator() == true)) {
+                $data = json_decode($request->getContent(), true);
 
-                    $user = $repository->findOneBy(array('email' => $data['email']));
-                    $arr = array('id' => $user->getId(), 'name' => $user->getName(), 'firstName' => $user->getFirstName(), 'email' => $user->getEmail());
-                    $reponse = json_encode($arr,JSON_UNESCAPED_UNICODE);
+                if (!empty(isset($data['name'])) && !empty(isset($data['firstName'])) && !empty(isset($data['email'])) && !empty(isset($data['password'])) && ($data['administrator'] == "1" || $data['administrator'] == "0") && isset($data['administrator'])) {
+                    if (!$user = $repository->findOneBy(array('email' => $data['email']))) {
+                        $a = new User();
+                        $a->setFirstName($data['firstName']);
+                        $a->setName($data['name']);
+                        $a->setEmail($data['email']);
+                        $a->setPassword(password_hash($data['password'], PASSWORD_BCRYPT));
+                        $a->setAdministrator($data['administrator']);
 
-                    $message = "L'utilisateur a été créé.";
-                }else{
-                    throw new NotFoundHttpException('L\'utilisateur existe déjà.');
+                        $em->persist($a);
+                        $em->flush();
+
+                        $user = $repository->findOneBy(array('email' => $data['email']));
+                        $arr = array('id' => $user->getId(), 'name' => $user->getName(), 'firstName' => $user->getFirstName(), 'email' => $user->getEmail());
+                        $reponse = json_encode($arr,JSON_UNESCAPED_UNICODE);
+
+                    } else {
+                        throw new NotFoundHttpException('L\'utilisateur existe déjà.');
+                    }
+                } else {
+                    throw new NotFoundHttpException('Paramètre(s) manquant(s).');
                 }
-            }else{
-                throw new NotFoundHttpException('Paramètre(s) manquant(s).');
             }
-
+            else{
+                throw new NotFoundHttpException('Le token est expiré.');
+            }
         }else{
             throw new NotFoundHttpException('Vous n\'avez pas l\'autorisation nécessaire.');
         }
