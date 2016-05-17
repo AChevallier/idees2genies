@@ -44,7 +44,13 @@ class UserController extends Controller
 
         $em = $this->getDoctrine()->getEntityManager();
         $repository = $em->getRepository('ApiBundle:User');
-        $user = $repository->findOneBy(array('token' => $token));
+
+        try{
+            $user = $repository->findOneBy(array('token' => $token));
+        } catch(Exception $ex){
+            throw new NotFoundHttpException('Une erreur interne s\'est produite.');
+        }
+
 
         if($user){
 
@@ -78,7 +84,7 @@ class UserController extends Controller
                 }
             }
             else{
-                throw new NotFoundHttpException('Le token est expiré.');
+                throw new NotFoundHttpException('Le token est expiré ou vous n\'avez pas l\'autorisation necessaire.');
             }
         }else{
             throw new NotFoundHttpException('Vous n\'avez pas l\'autorisation nécessaire.');
