@@ -25,7 +25,7 @@ class CommunityController extends Controller
             );
         }
 
-        return new Response(json_encode($tableCommunitys,JSON_UNESCAPED_UNICODE));
+        return $this->get('service_data_response')->JsonResponse($tableCommunitys);
     }
 
     // Ajoute une communauté
