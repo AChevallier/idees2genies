@@ -9,7 +9,6 @@ use ApiBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use ApiBundle\Services\Fonctions;
 
 
 class UserController extends Controller
