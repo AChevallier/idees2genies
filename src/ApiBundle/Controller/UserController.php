@@ -32,12 +32,7 @@ class UserController extends Controller
         	);
     	}
 
-        $reponse = json_encode($tableUsers,JSON_UNESCAPED_UNICODE);
-
-        $reponse = new Response($reponse);
-        $reponse->headers->set('Access-Control-Allow-Origin', 'http://localhost:3000');
-
-        return $reponse;
+        return $this->get('service_data_response')->JsonResponse($tableUsers);
     }
 
     // Fonction qui ajoute un utilisateur
@@ -72,9 +67,13 @@ class UserController extends Controller
                                 $em->flush();
 
                                 $user = $repository->findOneBy(array('email' => $data['email']));
-                                $arr = array('id' => $user->getId(), 'name' => $user->getName(), 'firstName' => $user->getFirstName(), 'email' => $user->getEmail());
-                                $reponse = json_encode($arr,JSON_UNESCAPED_UNICODE);
-                                return new JsonResponse($reponse, 200);
+                                $data = array(
+                                    'id' => $user->getId(),
+                                    'name' => $user->getName(),
+                                    'firstName' => $user->getFirstName(),
+                                    'email' => $user->getEmail()
+                                );
+                                return $this->get('service_data_response')->JsonResponse($data);
 
                             } else {
                                 return $this->get('service_errors_messages')->errorMessage("006");
@@ -126,10 +125,16 @@ class UserController extends Controller
                         $user->setValideToken($date);
                         $em->flush();
 
-                        $arr = array('id' => $user->getId(), 'name' => $user->getName(), 'firstName' => $user->getFirstName(), 'email' => $user->getEmail(),  'token' => $token, 'valideToken' => $valideToken);
-                        $reponse = json_encode($arr,JSON_UNESCAPED_UNICODE);
-                        return new JsonResponse($reponse, 200);
+                        $data = array(
+                            'id' => $user->getId(),
+                            'name' => $user->getName(),
+                            'firstName' => $user->getFirstName(),
+                            'email' => $user->getEmail(),
+                            'token' => $token,
+                            'valideToken' => $valideToken
+                        );
 
+                        return $this->get('service_data_response')->JsonResponse($data);
                     }
                     catch(Exception $ex){
                         return $this->get('service_errors_messages')->errorMessage("001");

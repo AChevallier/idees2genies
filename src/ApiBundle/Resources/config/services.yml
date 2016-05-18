@@ -1,3 +1,6 @@
 services:
     service_errors_messages:
         class:        ApiBundle\Services\ErrorsMessages
+
+    service_data_response:
+        class:        ApiBundle\Services\DataResponse
