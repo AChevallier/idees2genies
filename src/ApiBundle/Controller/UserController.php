@@ -3,6 +3,7 @@
 namespace ApiBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use ApiBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,6 +27,8 @@ class UserController extends Controller
         		'id' => $user->getId(),
             	'name' => $user->getName(),
             	'firstName' => $user->getFirstName(),
+                'email' => $user->getEmail(),
+                'administrator' => $user->getAdministrator(),
         	);
     	}
 
@@ -40,100 +43,121 @@ class UserController extends Controller
     // Fonction qui ajoute un utilisateur
     public function addAction(Request $request)
     {
-        $token = $request->headers->get('token');
-
-        $em = $this->getDoctrine()->getEntityManager();
-        $repository = $em->getRepository('ApiBundle:User');
-
         try{
+            $token = $request->headers->get('token');
+
+            $em = $this->getDoctrine()->getEntityManager();
+            $repository = $em->getRepository('ApiBundle:User');
+
             $user = $repository->findOneBy(array('token' => $token));
-        } catch(Exception $ex){
-            throw new NotFoundHttpException('Une erreur interne s\'est produite.');
-        }
 
+            if($user){
 
-        if($user){
+                $valideToken = $user->getValideToken();
+                $date = new \DateTime();
 
-            $valideToken = $user->getValideToken();
-            $date = new \DateTime();
+                if(($valideToken > $date) && ($user->getAdministrator() == true)) {
+                    $data = json_decode($request->getContent(), true);
 
-            if(($valideToken > $date) && ($user->getAdministrator() == true)) {
-                $data = json_decode($request->getContent(), true);
+                    if (!empty(isset($data['name'])) && !empty(isset($data['firstName'])) && !empty(isset($data['email'])) && !empty(isset($data['password'])) && ($data['administrator'] == "1" || $data['administrator'] == "0") && isset($data['administrator'])) {
+                        if (!$user = $repository->findOneBy(array('email' => $data['email']))) {
+                            $a = new User();
+                            $a->setFirstName($data['firstName']);
+                            $a->setName($data['name']);
+                            $a->setEmail($data['email']);
+                            $a->setPassword(password_hash($data['password'], PASSWORD_BCRYPT));
+                            $a->setAdministrator($data['administrator']);
 
-                if (!empty(isset($data['name'])) && !empty(isset($data['firstName'])) && !empty(isset($data['email'])) && !empty(isset($data['password'])) && ($data['administrator'] == "1" || $data['administrator'] == "0") && isset($data['administrator'])) {
-                    if (!$user = $repository->findOneBy(array('email' => $data['email']))) {
-                        $a = new User();
-                        $a->setFirstName($data['firstName']);
-                        $a->setName($data['name']);
-                        $a->setEmail($data['email']);
-                        $a->setPassword(password_hash($data['password'], PASSWORD_BCRYPT));
-                        $a->setAdministrator($data['administrator']);
+                            $em->persist($a);
+                            $em->flush();
 
-                        $em->persist($a);
-                        $em->flush();
+                            $user = $repository->findOneBy(array('email' => $data['email']));
+                            $arr = array('id' => $user->getId(), 'name' => $user->getName(), 'firstName' => $user->getFirstName(), 'email' => $user->getEmail());
+                            $reponse = json_encode($arr,JSON_UNESCAPED_UNICODE);
+                            return new JsonResponse($reponse, 200);
 
-                        $user = $repository->findOneBy(array('email' => $data['email']));
-                        $arr = array('id' => $user->getId(), 'name' => $user->getName(), 'firstName' => $user->getFirstName(), 'email' => $user->getEmail());
-                        $reponse = json_encode($arr,JSON_UNESCAPED_UNICODE);
-
+                        } else {
+                            $arr = array('code_metier' => '004', 'message' => 'L\'utilisateur existe déjà.');
+                            $reponse = json_encode($arr,JSON_UNESCAPED_UNICODE);
+                            return new JsonResponse($reponse, 500);
+                        }
                     } else {
-                        throw new NotFoundHttpException('L\'utilisateur existe déjà.');
+                        $arr = array('code_metier' => '003', 'message' => 'Paramètre(s) manquant(s).');
+                        $reponse = json_encode($arr,JSON_UNESCAPED_UNICODE);
+                        return new JsonResponse($reponse, 500);
                     }
-                } else {
-                    throw new NotFoundHttpException('Paramètre(s) manquant(s).');
                 }
+                else{
+                    $arr = array('code_metier' => '005', 'message' => 'Le token est expiré ou vous n\'avez pas l\'autorisation necessaire.');
+                    $reponse = json_encode($arr,JSON_UNESCAPED_UNICODE);
+                    return new JsonResponse($reponse, 500);
+                }
+            }else{
+                $arr = array('code_metier' => '006', 'message' => 'Vous n\'avez pas l\'autorisation nécessaire.');
+                $reponse = json_encode($arr,JSON_UNESCAPED_UNICODE);
+                return new JsonResponse($reponse, 500);
             }
-            else{
-                throw new NotFoundHttpException('Le token est expiré ou vous n\'avez pas l\'autorisation necessaire.');
-            }
-        }else{
-            throw new NotFoundHttpException('Vous n\'avez pas l\'autorisation nécessaire.');
+        }catch(Exception $ex) {
+            $arr = array('code_metier' => '001', 'message' => 'Une erreur interne s\'est produite.');
+            $reponse = json_encode($arr,JSON_UNESCAPED_UNICODE);
+            return new JsonResponse($reponse, 500);
         }
-        return new JsonResponse($reponse);
     }
 
     // Fonction qui authentifie l'utilisateur
     public function loginAction(){
 
-        $params = array();
-        $content = $this->get("request")->getContent();
-        if (!empty($content)) {
-            $params = json_decode($content, true);
-        }
+        try{
+            $params = array();
+            $content = $this->get("request")->getContent();
+            if (!empty($content)) {
+                $params = json_decode($content, true);
+            }
 
-        if(!empty($params['login']) && !empty($params['password'])){
+            if(!empty($params['login']) && !empty($params['password'])){
 
-            $em = $this->getDoctrine()->getEntityManager();
-            $repository = $em->getRepository('ApiBundle:User');
-            $user = $repository->findOneBy(array('email' => $params['login']));
+                $em = $this->getDoctrine()->getEntityManager();
+                $repository = $em->getRepository('ApiBundle:User');
+                $user = $repository->findOneBy(array('email' => $params['login']));
 
-            if(password_verify($params['password'], $user->getPassword())){
+                if(password_verify($params['password'], $user->getPassword())){
 
-                try{
-                    $token = bin2hex(openssl_random_pseudo_bytes(20));
-                    $date = new \DateTime();
-                    $date->modify('+1 day');
+                    try{
+                        $token = bin2hex(openssl_random_pseudo_bytes(20));
+                        $date = new \DateTime();
+                        $date->modify('+1 day');
 
-                    $valideToken = $date->format('Y-m-d H:i:s');
+                        $valideToken = $date->format('Y-m-d H:i:s');
 
-                    $user->setToken($token);
-                    $user->setValideToken($date);
-                    $em->flush();
+                        $user->setToken($token);
+                        $user->setValideToken($date);
+                        $em->flush();
 
-                    $arr = array('id' => $user->getId(), 'name' => $user->getName(), 'firstName' => $user->getFirstName(), 'email' => $user->getEmail(),  'token' => $token, 'valideToken' => $valideToken);
+                        $arr = array('id' => $user->getId(), 'name' => $user->getName(), 'firstName' => $user->getFirstName(), 'email' => $user->getEmail(),  'token' => $token, 'valideToken' => $valideToken);
+                        $reponse = json_encode($arr,JSON_UNESCAPED_UNICODE);
+                        return new JsonResponse($reponse, 200);
+
+                    }
+                    catch(Exception $ex){
+                        $arr = array('code_metier' => '001', 'message' => 'Une erreur interne s\'est produite.');
+                        $reponse = json_encode($arr,JSON_UNESCAPED_UNICODE);
+                        return new JsonResponse($reponse, 500);
+                    }
+                }
+                else{
+                    $arr = array('code_metier' => '002', 'message' => 'Le login ou le mot de passe est incorrect.');
                     $reponse = json_encode($arr,JSON_UNESCAPED_UNICODE);
-
+                    return new JsonResponse($reponse, 500);
                 }
-                catch(Exception $ex){
-                    throw new NotFoundHttpException('Une erreur interne s\'est produite.');
-                }
+            }else{
+                $arr = array('code_metier' => '003', 'message' => 'Paramètre(s) manquant(s).');
+                $reponse = json_encode($arr,JSON_UNESCAPED_UNICODE);
+                return new JsonResponse($reponse, 500);
             }
-            else{
-                throw new NotFoundHttpException('Le login ou le mot de passe est incorrect.');
-            }
-        }else{
-            throw new NotFoundHttpException('Veuillez renseigner le login et le mot de passe.');
+        }catch(Exception $ex){
+            $arr = array('code_metier' => '001', 'message' => 'Une erreur interne s\'est produite.');
+            $reponse = json_encode($arr,JSON_UNESCAPED_UNICODE);
+            return new JsonResponse($reponse, 500);
         }
-        return new JsonResponse($reponse);
     }
 }
