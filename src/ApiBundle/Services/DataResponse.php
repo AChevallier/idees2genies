@@ -2,6 +2,7 @@
 
 namespace ApiBundle\Services;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 
 class DataResponse
@@ -13,8 +14,7 @@ class DataResponse
     // Fonction qui renvoie la réponse en JSON avec un code 200
     public function JsonResponse($data){
 
-        $response = json_encode($data,JSON_UNESCAPED_UNICODE);
-        $response =  new JsonResponse($response, 200);
+        $response =  new Response(json_encode($data,JSON_UNESCAPED_UNICODE), 200);
         $response->headers->set('Access-Control-Allow-Origin', 'http://localhost:3000');
 
         return $response;

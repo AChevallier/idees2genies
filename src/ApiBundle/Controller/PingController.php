@@ -9,12 +9,14 @@ class PingController extends Controller
 {
     public function indexAction()
     {
-        $reponse = new JsonResponse();
-        $reponse -> setData(array(
-                'date' => date(("d-m-Y G:i:s"))
-            ));
 
-        $reponse->headers->set('Access-Control-Allow-Origin', 'http://localhost:3000');
-        return $reponse;
+        $dateNow = new \DateTime();
+        $date = $dateNow->format('Y-m-d H:i:s');
+
+
+        $data = array(
+            'date' => $date
+        );
+        return $this->get('service_data_response')->JsonResponse($data);
     }
 }
