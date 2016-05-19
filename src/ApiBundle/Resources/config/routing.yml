@@ -15,6 +15,11 @@ api_ping:
     path:     /ping
     defaults: { _controller: ApiBundle:Ping:index }
 
+api_ping_post:
+    path:     /ping/post
+    defaults: { _controller: ApiBundle:Ping:post }
+    methods:  [POST]
+
 #------------------------------------------------------
 # User Controller
 #------------------------------------------------------

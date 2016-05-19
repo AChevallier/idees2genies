@@ -19,4 +19,21 @@ class PingController extends Controller
         );
         return $this->get('service_data_response')->JsonResponse($data);
     }
+
+    public function postAction()
+    {
+
+        $params = array();
+        $content = $this->get("request")->getContent();
+        if (!empty($content)) {
+            $params = json_decode($content, true);
+        }
+
+        $tableData = array(
+            'name' => $params['name'],
+            'message' => 'Nom bien reçu !'
+        );
+
+        return $this->get('service_data_response')->JsonResponse($tableData);
+    }
 }
