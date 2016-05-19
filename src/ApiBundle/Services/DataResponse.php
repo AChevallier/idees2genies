@@ -15,8 +15,6 @@ class DataResponse
     public function JsonResponse($data){
 
         $response = new JsonResponse(json_encode($data,JSON_UNESCAPED_UNICODE), 200);
-        $response->headers->set('Access-Control-Allow-Origin', '*');
-        $response->headers->set('Access-Control-Request-Method', 'POST');
 
         return $response;
     }
