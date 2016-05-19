@@ -131,8 +131,7 @@ class UserController extends Controller
                             'name' => $user->getName(),
                             'firstName' => $user->getFirstName(),
                             'email' => $user->getEmail(),
-                            'token' => $token,
-                            'valideToken' => $valideToken
+                            'token' => $token
                         );
 
                         return $this->get('service_data_response')->JsonResponse($data);
