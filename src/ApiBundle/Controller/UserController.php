@@ -61,7 +61,7 @@ class UserController extends Controller
                                 $a->setFirstName($data['firstName']);
                                 $a->setName($data['name']);
                                 $a->setEmail($data['email']);
-                                $a->setPassword(password_hash($data['password'], PASSWORD_BCRYPT));
+                                $a->setPassword(md5($data['password']));
                                 $a->setAdministrator($data['administrator']);
 
                                 $em->persist($a);
@@ -114,7 +114,7 @@ class UserController extends Controller
                 $user = $repository->findOneBy(array('email' => $params['login']));
 
                 if($user){
-                    if(password_verify($params['password'], $user->getPassword())){
+                    if(md5($params['password']) ==  $user->getPassword()){
 
                         try{
                             $token = bin2hex(openssl_random_pseudo_bytes(20));
@@ -147,8 +147,6 @@ class UserController extends Controller
                 }else{
                     return $this->get('service_errors_messages')->errorMessage("008");
                 }
-
-
             }else{
                 return $this->get('service_errors_messages')->errorMessage("002");
             }
