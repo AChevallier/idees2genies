@@ -39,6 +39,7 @@ class UserController extends Controller
     public function addAction(Request $request)
     {
         try{
+
             $token = $request->headers->get('token');
 
             $em = $this->getDoctrine()->getEntityManager();
