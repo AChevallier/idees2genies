@@ -34,6 +34,9 @@ class ErrorsMessages
             case "007":
                 $arr = array('code_metier' => '007', 'message' => "Vous n'êtes pas administrateur.");
                 break;
+            case "008":
+                $arr = array('code_metier' => '008', 'message' => "Utilisateur inconnu.");
+                break;
             default:
                 $arr = array('code_metier' => '001', 'message' => "Une erreur interne s'est produite.");
         }

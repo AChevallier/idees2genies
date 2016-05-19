@@ -113,36 +113,42 @@ class UserController extends Controller
                 $repository = $em->getRepository('ApiBundle:User');
                 $user = $repository->findOneBy(array('email' => $params['login']));
 
-                if(password_verify($params['password'], $user->getPassword())){
+                if($user){
+                    if(password_verify($params['password'], $user->getPassword())){
 
-                    try{
-                        $token = bin2hex(openssl_random_pseudo_bytes(20));
-                        $date = new \DateTime();
-                        $date->modify('+1 day');
+                        try{
+                            $token = bin2hex(openssl_random_pseudo_bytes(20));
+                            $date = new \DateTime();
+                            $date->modify('+1 day');
 
-                        $valideToken = $date->format('Y-m-d H:i:s');
+                            $valideToken = $date->format('Y-m-d H:i:s');
 
-                        $user->setToken($token);
-                        $user->setValideToken($date);
-                        $em->flush();
+                            $user->setToken($token);
+                            $user->setValideToken($date);
+                            $em->flush();
 
-                        $data = array(
-                            'id' => $user->getId(),
-                            'name' => $user->getName(),
-                            'firstName' => $user->getFirstName(),
-                            'email' => $user->getEmail(),
-                            'token' => $token
-                        );
+                            $data = array(
+                                'id' => $user->getId(),
+                                'name' => $user->getName(),
+                                'firstName' => $user->getFirstName(),
+                                'email' => $user->getEmail(),
+                                'token' => $token
+                            );
 
-                        return $this->get('service_data_response')->JsonResponse($data);
+                            return $this->get('service_data_response')->JsonResponse($data);
+                        }
+                        catch(Exception $ex){
+                            return $this->get('service_errors_messages')->errorMessage("001");
+                        }
                     }
-                    catch(Exception $ex){
-                        return $this->get('service_errors_messages')->errorMessage("001");
+                    else{
+                        return $this->get('service_errors_messages')->errorMessage("003");
                     }
+                }else{
+                    return $this->get('service_errors_messages')->errorMessage("008");
                 }
-                else{
-                    return $this->get('service_errors_messages')->errorMessage("003");
-                }
+
+
             }else{
                 return $this->get('service_errors_messages')->errorMessage("002");
             }
