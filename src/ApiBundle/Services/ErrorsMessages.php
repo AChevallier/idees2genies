@@ -40,7 +40,10 @@ class ErrorsMessages
             default:
                 $arr = array('code_metier' => '001', 'message' => "Une erreur interne s'est produite.");
         }
-        $reponse = json_encode($arr,JSON_UNESCAPED_UNICODE);
-        return new JsonResponse($reponse, 500);
+
+        $reponse = $arr = array('error' => $arr);
+        $reponse = json_encode($reponse,JSON_UNESCAPED_UNICODE);
+
+        return new JsonResponse($reponse, 200);
     }
 }
