@@ -38,6 +38,11 @@ api_user_login:
     defaults: { _controller: ApiBundle:User:login }
     methods:  [POST]
 
+api_user_is_valide_token:
+    path:     /user/isValideToken
+    defaults: { _controller: ApiBundle:User:isValideToken }
+    methods:  [POST]
+
 #------------------------------------------------------
 # Community Controller
 #------------------------------------------------------

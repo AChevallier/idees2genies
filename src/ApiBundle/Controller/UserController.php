@@ -156,4 +156,49 @@ class UserController extends Controller
             return $this->get('service_errors_messages')->errorMessage("001");
         }
     }
+
+    // Fonction qui teste la valididé du token
+    public function isValideTokenAction(){
+        try{
+            $params = array();
+            $content = $this->get("request")->getContent();
+            if (!empty($content)) {
+                $params = json_decode($content, true);
+            }
+
+            if(!empty($params['token'])){
+
+                $em = $this->getDoctrine()->getEntityManager();
+                $repository = $em->getRepository('ApiBundle:User');
+
+                $user = $repository->findOneBy(array('token' => $params['token']));
+
+                if($user){
+                    $valideToken = $user->getValideToken();
+                    $date = new \DateTime();
+
+                    if($valideToken > $date) {
+                        $data = array(
+                            'valide' => true,
+                        );
+                        return $this->get('service_data_response')->JsonResponse($data);
+                    }else{
+                        $data = array(
+                            'valide' => false,
+                        );
+                        return $this->get('service_data_response')->JsonResponse($data);
+                    }
+                }else{
+                    $data = array(
+                        'valide' => false,
+                    );
+                    return $this->get('service_data_response')->JsonResponse($data);
+                }
+            }else{
+                return $this->get('service_errors_messages')->errorMessage("002");
+            }
+        }catch(Exception $ex){
+            return $this->get('service_errors_messages')->errorMessage("001");
+        }
+    }
 }
