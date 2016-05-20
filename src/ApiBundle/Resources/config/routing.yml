@@ -20,6 +20,10 @@ api_ping_post:
     defaults: { _controller: ApiBundle:Ping:post }
     methods:  [POST]
 
+api_ping_inner:
+    path:     /ping/inner
+    defaults: { _controller: ApiBundle:Ping:inner }
+
 #------------------------------------------------------
 # User Controller
 #------------------------------------------------------
