@@ -27,6 +27,7 @@ class PingController extends Controller
         return $this->get('service_data_response')->JsonResponse($data);
     }
 
+    // Fonction pour tester le post
     public function postAction()
     {
 
@@ -44,25 +45,18 @@ class PingController extends Controller
         return $this->get('service_data_response')->JsonResponse($tableData);
     }
 
+    // Fonction pour tester inner join
     public  function innerAction(){
 
-        /*$em = $this->getDoctrine()->getEntityManager();
-        $videos = $em->createQuery('select uc, u
-                            from ApiBundle:UserCommunity uc
-                            left join ApiBundle:User u
-                            where uc.idCommunity = u.id')
-            ->getResult();
+        $em = $this->getDoctrine()->getManager();
+        $qb = $em->createQueryBuilder()
+            ->select('u.name as nameUser, uc.id as idUserCommunity, uc.idCommunity as idCommunity, c.description as descriptionCommunity, c.name as nameCommunity')
+            ->from('ApiBundle:UserCommunity', 'uc')
+            ->innerJoin('ApiBundle:User', 'u', 'WITH', 'uc.idUser = u.id')
+            ->innerJoin('ApiBundle:Community', 'c', 'WITH', 'uc.idCommunity = c.id')
+        ;
+        $data = $qb->getQuery()->getResult();
 
-        $parameters=$videos->getParameters();*/
-
-        // OK ci-après
-
-        /*$em = $this->getDoctrine()->getManager();
-        $query = $em->createQuery('SELECT u FROM ApiBundle:User u WHERE u.name = :name')->setParameter('name', 'VANDYCKE');
-
-        $products = $query->getResult();
-        $name = $products[0]->getFirstName();*/
-
-        return new Response("essai");
+        return $this->get('service_data_response')->JsonResponse($data);
     }
 }
