@@ -29,13 +29,19 @@ class ErrorsMessages
                 $arr = array('code_metier' => '005', 'message' => "Votre token est expiré.");
                 break;
             case "006":
-                $arr = array('code_metier' => '006', 'message' => "L'utilisateur existe déjà.");
+                $arr = array('code_metier' => '006', 'message' => "Cet utilisateur existe déjà.");
                 break;
             case "007":
                 $arr = array('code_metier' => '007', 'message' => "Vous n'êtes pas administrateur.");
                 break;
             case "008":
                 $arr = array('code_metier' => '008', 'message' => "Utilisateur inconnu.");
+                break;
+            case "009":
+                $arr = array('code_metier' => '009', 'message' => "Cette communauté existe déjà.");
+                break;
+            case "010":
+                $arr = array('code_metier' => '010', 'message' => "Cette communauté n'existe pas.");
                 break;
             default:
                 $arr = array('code_metier' => '001', 'message' => "Une erreur interne s'est produite.");

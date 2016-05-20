@@ -55,3 +55,8 @@ api_community_add:
     path:     /community/add
     defaults: { _controller: ApiBundle:Community:add }
     methods:  [POST]
+
+api_community_delete:
+    path:     /community/delete/{id}
+    defaults: { _controller: ApiBundle:Community:delete }
+    methods:  [DELETE]
