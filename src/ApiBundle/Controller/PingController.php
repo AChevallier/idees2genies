@@ -50,13 +50,19 @@ class PingController extends Controller
 
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder()
-            ->select('u.name as nameUser, uc.id as idUserCommunity, uc.idCommunity as idCommunity, c.description as descriptionCommunity, c.name as nameCommunity')
+            ->select('u.name AS nameUser, uc.id AS idUserCommunity, uc.idCommunity AS idCommunity, c.description AS descriptionCommunity, c.name AS nameCommunity')
             ->from('ApiBundle:UserCommunity', 'uc')
             ->innerJoin('ApiBundle:User', 'u', 'WITH', 'uc.idUser = u.id')
             ->innerJoin('ApiBundle:Community', 'c', 'WITH', 'uc.idCommunity = c.id')
+            ->where('u.name = :name')
+            ->setParameters(array('name' => 'VANDYCKE'))
         ;
         $data = $qb->getQuery()->getResult();
 
-        return $this->get('service_data_response')->JsonResponse($data);
+        $tableData = array(
+            'community' => $data
+        );
+
+        return $this->get('service_data_response')->JsonResponse($tableData);
     }
 }

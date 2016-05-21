@@ -54,6 +54,7 @@ api_user_is_valide_token:
 api_community:
     path:     /community
     defaults: { _controller: ApiBundle:Community:index }
+    methods:  [GET, POST]
 
 api_community_add:
     path:     /community/add
@@ -63,4 +64,15 @@ api_community_add:
 api_community_delete:
     path:     /community/delete/{id}
     defaults: { _controller: ApiBundle:Community:delete }
-    methods:  [DELETE]
+    methods:  [DELETE, POST, GET]
+
+api_community_my_communities:
+    path:     /community/myCommunities
+    defaults: { _controller: ApiBundle:Community:myCommunities }
+    methods:  [GET, POST]
+
+api_community_user_communities:
+    path:     /community/userCommunities/{id}
+    defaults: { _controller: ApiBundle:Community:userCommunities }
+    methods:  [GET, POST]
+
