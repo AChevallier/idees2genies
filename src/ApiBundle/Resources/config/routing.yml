@@ -76,3 +76,17 @@ api_community_user_communities:
     defaults: { _controller: ApiBundle:Community:userCommunities }
     methods:  [GET, POST]
 
+
+#------------------------------------------------------
+# Idea Controller
+#------------------------------------------------------
+
+api_idea:
+    path:     /idea
+    defaults: { _controller: ApiBundle:Idea:index }
+    methods:  [POST, GET]
+
+api_idea_add:
+    path:     /idea/add
+    defaults: { _controller: ApiBundle:Idea:add }
+    methods:  [POST]
