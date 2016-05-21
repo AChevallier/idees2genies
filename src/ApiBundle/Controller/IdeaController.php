@@ -72,10 +72,9 @@ class IdeaController extends Controller
                         }catch(Exception $ex){
                             return $this->get('service_errors_messages')->errorMessage("001");
                         }
-
-
+                    }else{
+                        return $this->get('service_errors_messages')->errorMessage("002");
                     }
-
                 }else{
                     return $this->get('service_errors_messages')->errorMessage("005");
                 }
