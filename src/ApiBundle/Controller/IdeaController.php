@@ -14,10 +14,73 @@ use Symfony\Component\HttpFoundation\Request;
 class IdeaController extends Controller
 {
 
-    // Fonction homePage de user
-    public function indexAction()
+    // Fonction qui liste toutes les idées
+    public function indexAction(Request $request)
     {
-        return new JsonResponse("Idea");
+        try{
+            $token = $request->headers->get('token');
+
+            $em = $this->getDoctrine()->getEntityManager();
+            $repository = $em->getRepository('ApiBundle:User');
+
+            $user = $repository->findOneBy(array('token' => $token));
+
+            if($user){
+                $valideToken = $user->getValideToken();
+                $idUser = $user->getId();
+                $date = new \DateTime();
+
+                if($valideToken > $date){
+
+                    $em = $this->getDoctrine()->getEntityManager();
+
+                    $repository = $em->getRepository('ApiBundle:Idea');
+                    $ideas = $repository->findAll();
+
+                    $tableIdeas = array();
+
+                    foreach ($ideas as $idea) {
+
+                        $repository = $this->getDoctrine()->getRepository('ApiBundle:VoteUserIdea');
+                        $voteUser = $repository->findOneBy(array('idUser' => $idUser, 'idIdea' => $idea->getId()));
+
+                        if($voteUser){
+                            $voteUser = true;
+                        }else{
+                            $voteUser = false;
+                        }
+
+                        $repository = $this->getDoctrine()->getRepository('ApiBundle:User');
+                        $auteur = $repository->findOneBy(array('id' => $idea->getIdUser()));
+
+                        $qb = $em->createQueryBuilder()
+                            ->select('COUNT(vui.id)')
+                            ->from('ApiBundle:VoteUserIdea', 'vui')
+                            ->where('vui.idIdea = :idIdea')
+                            ->setParameters(array('idIdea' => $idea->getId()))
+                        ;
+                        $nbVotes = $qb->getQuery()->getSingleScalarResult();
+
+                        $tableIdeas[] = array(
+                            'id' => $idea->getId(),
+                            'title' => $idea->getTitle(),
+                            'idea' => $idea->getIdea(),
+                            'auteur' => $auteur->getFirstName().' '.$auteur->getName(),
+                            'voteUser' => $voteUser,
+                            'nbVotes' => $nbVotes
+                        );
+                    }
+                    return $this->get('service_data_response')->JsonResponse($tableIdeas);
+
+                }else{
+                    return $this->get('service_errors_messages')->errorMessage("005");
+                }
+            }else{
+                return $this->get('service_errors_messages')->errorMessage("004");
+            }
+        }catch(Exception $ex) {
+            return $this->get('service_errors_messages')->errorMessage("001");
+        }
     }
 
     // Fonction qui ajoute une idée
