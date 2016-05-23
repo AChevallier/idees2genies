@@ -199,7 +199,7 @@ class User
     /**
      * Set ValideToken
      *
-     * @param DateTime $email
+     * @param DateTime $valideToken
      * @return User
      */
     public function setValideToken($valideToken)

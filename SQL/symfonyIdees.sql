@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  localhost:8889
--- Généré le :  Ven 20 Mai 2016 à 19:44
+-- Généré le :  Lun 23 Mai 2016 à 10:05
 -- Version du serveur :  5.5.42
 -- Version de PHP :  5.6.10
 
@@ -43,7 +43,7 @@ CREATE TABLE `community` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `description` varchar(255) COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Contenu de la table `community`
@@ -51,7 +51,8 @@ CREATE TABLE `community` (
 
 INSERT INTO `community` (`id`, `name`, `description`) VALUES
 (1, 'Licence PRISM', 'Le groupe concerne la classe.'),
-(7, 'VANDYCKE', 'Le groupe de la famille');
+(7, 'VANDYCKE', 'Le groupe de la famille'),
+(8, 'DUT GEII', 'Un forum d''entre aide.');
 
 -- --------------------------------------------------------
 
@@ -64,8 +65,22 @@ CREATE TABLE `idea` (
   `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `idea` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `idCommunauty` int(11) DEFAULT NULL,
-  `idUser` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `idUser` int(11) NOT NULL,
+  `publicateDate` datetime NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Contenu de la table `idea`
+--
+
+INSERT INTO `idea` (`id`, `title`, `idea`, `idCommunauty`, `idUser`, `publicateDate`) VALUES
+(1, 'Essai', 'Je ne sais pas', NULL, 2, '2016-05-23 06:31:09'),
+(3, 'Hello', 'Bonjour', 1, 2, '0000-00-00 00:00:00'),
+(6, 'France', 'Français', NULL, 2, '0000-00-00 00:00:00'),
+(7, 'GEII', 'Bonjour', NULL, 2, '2016-05-23 10:02:12'),
+(8, 'GEII', 'Bonjour', NULL, 2, '2016-05-23 10:03:47'),
+(9, 'GEII', 'Bonjour', NULL, 2, '2016-05-23 10:04:35'),
+(10, 'GEII', 'Bonjour', NULL, 2, '2016-05-23 10:04:50');
 
 -- --------------------------------------------------------
 
@@ -82,15 +97,15 @@ CREATE TABLE `user` (
   `token` varchar(250) COLLATE utf8_unicode_ci NOT NULL,
   `valideToken` datetime NOT NULL,
   `administrator` tinyint(1) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=83 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Contenu de la table `user`
 --
 
 INSERT INTO `user` (`id`, `name`, `firstName`, `email`, `password`, `token`, `valideToken`, `administrator`) VALUES
-(2, 'VANDYCKE', 'Steve', 'svandycke@gmail.com', 'c3284d0f94606de1fd2af172aba15bf3', '7b7572dea5afbea15238cda3c6317d9d11011dc5', '2016-05-21 18:11:43', 1),
-(62, 'CHEVALLIER', 'Alexandre', 'alexandre.chevallier4@gmail.com', '8f8c1ff4ce76e757e2000ed4e6926af4', 'fd6d191e7c1b4d869678f650f21cf1cd60787d87', '2016-05-21 11:54:03', 1);
+(2, 'VANDYCKE', 'Steve', 'svandycke@gmail.com', 'c3284d0f94606de1fd2af172aba15bf3', '340f1ad23ebe7f9ca876114d0477649c4676b4a1', '2016-05-24 09:16:31', 1),
+(62, 'CHEVALLIER', 'Alexandre', 'alexandre.chevallier4@gmail.com', '8f8c1ff4ce76e757e2000ed4e6926af4', '53ab18ac3389a8a79a9bbbbe8d5511e50b15b0bc', '2016-05-24 09:00:38', 1);
 
 -- --------------------------------------------------------
 
@@ -102,7 +117,15 @@ CREATE TABLE `user_community` (
   `id` int(11) NOT NULL,
   `idCommunity` int(11) NOT NULL,
   `idUser` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Contenu de la table `user_community`
+--
+
+INSERT INTO `user_community` (`id`, `idCommunity`, `idUser`) VALUES
+(6, 7, 2),
+(7, 1, 62);
 
 -- --------------------------------------------------------
 
@@ -114,7 +137,15 @@ CREATE TABLE `vote_user_idea` (
   `id` int(11) NOT NULL,
   `idUser` int(11) NOT NULL,
   `idIdea` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Contenu de la table `vote_user_idea`
+--
+
+INSERT INTO `vote_user_idea` (`id`, `idUser`, `idIdea`) VALUES
+(3, 2, 6),
+(4, 2, 1);
 
 --
 -- Index pour les tables exportées
@@ -169,27 +200,27 @@ ALTER TABLE `commentary_idea`
 -- AUTO_INCREMENT pour la table `community`
 --
 ALTER TABLE `community`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT pour la table `idea`
 --
 ALTER TABLE `idea`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT pour la table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=83;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=63;
 --
 -- AUTO_INCREMENT pour la table `user_community`
 --
 ALTER TABLE `user_community`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT pour la table `vote_user_idea`
 --
 ALTER TABLE `vote_user_idea`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

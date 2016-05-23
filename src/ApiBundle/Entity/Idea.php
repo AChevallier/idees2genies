@@ -35,6 +35,14 @@ class Idea
      */
     private $idea;
 
+
+    /**
+     * @var DateTime
+     *
+     * @ORM\Column(name="publicateDate", type="datetime")
+     */
+    private $publicateDate;
+
     /**
      * @var int
      *
@@ -112,6 +120,37 @@ class Idea
      * @param integer $idCommunauty
      * @return Idea
      */
+
+    /**
+     * Set publicateDate
+     *
+     * @param DateTime $publicateDate
+     * @return User
+     */
+    public function setPublicateDate($publicateDate)
+    {
+        $this->publicateDate = $publicateDate;
+
+        return $this;
+    }
+
+    /**
+     * Get publicateDate
+     *
+     * @return DateTime
+     */
+    public function getPublicateDate()
+    {
+        return $this->publicateDate;
+    }
+
+    /**
+     * Set idCommunauty
+     *
+     * @param integer $idCommunauty
+     * @return Idea
+     */
+
     public function setIdCommunauty($idCommunauty)
     {
         $this->idCommunauty = $idCommunauty;

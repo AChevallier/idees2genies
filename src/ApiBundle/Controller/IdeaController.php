@@ -61,11 +61,15 @@ class IdeaController extends Controller
                         ;
                         $nbVotes = $qb->getQuery()->getSingleScalarResult();
 
+                        $dateCreate = $idea->getPublicateDate();
+                        $date = $dateCreate->format('Y-m-d H:i:s');
+
                         $tableIdeas[] = array(
                             'id' => $idea->getId(),
                             'title' => $idea->getTitle(),
                             'idea' => $idea->getIdea(),
                             'auteur' => $auteur->getFirstName().' '.$auteur->getName(),
+                            'date' => $date,
                             'voteUser' => $voteUser,
                             'nbVotes' => $nbVotes
                         );
@@ -109,6 +113,7 @@ class IdeaController extends Controller
                             $idea->setTitle($data['title']);
                             $idea->setIdea($data['idea']);
                             $idea->setIdUser($user->getId());
+                            $idea->setPublicateDate($date = new \DateTime());
 
                             if(isset($data['idCommunity'])){
 
@@ -125,9 +130,13 @@ class IdeaController extends Controller
                             $em->persist($idea);
                             $em->flush();
 
+                            $date = new \DateTime();
+                            $date = $date->format('Y-m-d H:i:s');
+
                             $data = array(
                                 'title' => $data['title'],
                                 'idea' => $data['idea'],
+                                'date' => $date,
                             );
 
                             return $this->get('service_data_response')->JsonResponse($data);
