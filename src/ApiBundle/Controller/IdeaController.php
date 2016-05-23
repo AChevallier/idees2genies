@@ -62,7 +62,7 @@ class IdeaController extends Controller
                         $nbVotes = $qb->getQuery()->getSingleScalarResult();
 
                         $dateCreate = $idea->getPublicateDate();
-                        $date = $dateCreate->format('Y-m-d H:i:s');
+                        $date = $dateCreate->format('d/m/Y  H:i');
 
                         $tableIdeas[] = array(
                             'id' => $idea->getId(),
