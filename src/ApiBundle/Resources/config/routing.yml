@@ -90,3 +90,8 @@ api_idea_add:
     path:     /idea/add
     defaults: { _controller: ApiBundle:Idea:add }
     methods:  [POST]
+
+api_idea_top5:
+    path:     /idea/top5
+    defaults: { _controller: ApiBundle:Idea:top5 }
+    methods:  [POST, GET]

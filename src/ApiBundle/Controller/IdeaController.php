@@ -7,6 +7,7 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use ApiBundle\Entity\User;
 use ApiBundle\Entity\Idea;
+use ApiBundle\Entity\VoteUserIdea;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -76,6 +77,48 @@ class IdeaController extends Controller
                     }
                     return $this->get('service_data_response')->JsonResponse($tableIdeas);
 
+                }else{
+                    return $this->get('service_errors_messages')->errorMessage("005");
+                }
+            }else{
+                return $this->get('service_errors_messages')->errorMessage("004");
+            }
+        }catch(Exception $ex) {
+            return $this->get('service_errors_messages')->errorMessage("001");
+        }
+    }
+
+    // Fonction qui liste le top 5
+    public function top5Action(Request $request)
+    {
+        try{
+            $token = $request->headers->get('token');
+
+            $em = $this->getDoctrine()->getEntityManager();
+            $repository = $em->getRepository('ApiBundle:User');
+
+            $user = $repository->findOneBy(array('token' => $token));
+
+            if($user){
+                $valideToken = $user->getValideToken();
+                $idUser = $user->getId();
+                $date = new \DateTime();
+
+                if($valideToken > $date){
+
+                    $em = $this->getDoctrine()->getEntityManager();
+
+                    $qb = $em->createQueryBuilder()
+                        ->select('vui.idIdea AS idIdea, i.title AS title, u.name AS nameAutor, u.firstName AS firstNameAutor, i.publicateDate AS publicateDate, count(vui.id) AS nbVote')
+                        ->from('ApiBundle:VoteUserIdea', 'vui')
+                        ->innerJoin('ApiBundle:Idea', 'i', 'WITH', 'i.id = vui.idIdea')
+                        ->innerJoin('ApiBundle:User', 'u', 'WITH', 'i.idUser = u.id')
+                        ->groupBy('vui.idIdea')
+                        ->addOrderBy('nbVote', 'DESC')
+                        ->addOrderBy('i.publicateDate', 'DESC')
+                        ->setMaxResults(5);
+
+                    return $this->get('service_data_response')->JsonResponse($data = $qb->getQuery()->getResult());
                 }else{
                     return $this->get('service_errors_messages')->errorMessage("005");
                 }
