@@ -53,14 +53,14 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="token", type="string", length=250)
+     * @ORM\Column(name="token", type="string", length=250, nullable=true)
      */
     private $token;
 
     /**
      * @var DateTime
      *
-     * @ORM\Column(name="valideToken", type="datetime")
+     * @ORM\Column(name="valideToken", type="datetime", nullable=true)
      */
     private $valideToken;
 
