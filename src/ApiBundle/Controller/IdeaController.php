@@ -159,14 +159,15 @@ class IdeaController extends Controller
                             $idea->setPublicateDate($date = new \DateTime());
 
                             if(isset($data['idCommunity'])){
+                                if($data['idCommunity'] != ''){
+                                    $repository = $em->getRepository('ApiBundle:Community');
+                                    $community = $repository->findOneBy(array('id' => $data['idCommunity']));
 
-                                $repository = $em->getRepository('ApiBundle:Community');
-                                $community = $repository->findOneBy(array('id' => $data['idCommunity']));
-
-                                if($community){
-                                    $idea->setIdCommunauty($data['idCommunity']);
-                                }else{
-                                    return $this->get('service_errors_messages')->errorMessage("010");
+                                    if($community){
+                                        $idea->setIdCommunauty($data['idCommunity']);
+                                    }else{
+                                        return $this->get('service_errors_messages')->errorMessage("010");
+                                    }
                                 }
                             }
 
