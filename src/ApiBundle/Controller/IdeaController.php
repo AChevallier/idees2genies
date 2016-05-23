@@ -35,7 +35,7 @@ class IdeaController extends Controller
                     $em = $this->getDoctrine()->getEntityManager();
 
                     $repository = $em->getRepository('ApiBundle:Idea');
-                    $ideas = $repository->findAll();
+                    $ideas = $repository->findBy(array(), array('publicateDate' => 'DESC'));
 
                     $tableIdeas = array();
 

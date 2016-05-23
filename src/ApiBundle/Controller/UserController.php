@@ -179,6 +179,8 @@ class UserController extends Controller
                     if($valideToken > $date) {
                         $data = array(
                             'valide' => true,
+                            'name' => $user->getName(),
+                            'firstName' => $user->getFirstName(),
                         );
                         return $this->get('service_data_response')->JsonResponse($data);
                     }else{
