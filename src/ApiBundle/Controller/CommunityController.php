@@ -198,11 +198,7 @@ class CommunityController extends Controller
                     ;
                     $data = $qb->getQuery()->getResult();
 
-                    $tableData = array(
-                        'communities' => $data
-                    );
-
-                    return $this->get('service_data_response')->JsonResponse($tableData);
+                    return $this->get('service_data_response')->JsonResponse($data);
 
 
                 }else{
@@ -247,11 +243,7 @@ class CommunityController extends Controller
                                     ->setParameters(array('id' => $id));
                                 $data = $qb->getQuery()->getResult();
 
-                                $tableData = array(
-                                    'communities' => $data
-                                );
-
-                                return $this->get('service_data_response')->JsonResponse($tableData);
+                                return $this->get('service_data_response')->JsonResponse($data);
                             }
                             else{
                                 return $this->get('service_errors_messages')->errorMessage("008");

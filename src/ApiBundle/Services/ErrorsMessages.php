@@ -43,6 +43,9 @@ class ErrorsMessages
             case "010":
                 $arr = array('code_metier' => '010', 'message' => "Cette communauté n'existe pas.");
                 break;
+            case "011":
+                $arr = array('code_metier' => '011', 'message' => "Cette idée n'existe pas.");
+                break;
             default:
                 $arr = array('code_metier' => '001', 'message' => "Une erreur interne s'est produite.");
         }

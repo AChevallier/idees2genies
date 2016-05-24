@@ -95,3 +95,8 @@ api_idea_top5:
     path:     /idea/top5
     defaults: { _controller: ApiBundle:Idea:top5 }
     methods:  [POST, GET]
+
+api_idea_vote:
+    path:     /idea/vote
+    defaults: { _controller: ApiBundle:Idea:vote }
+    methods:  [POST]

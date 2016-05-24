@@ -201,4 +201,74 @@ class IdeaController extends Controller
             return $this->get('service_errors_messages')->errorMessage("001");
         }
     }
+
+    public function voteAction(Request $request)
+    {
+        try{
+            $token = $request->headers->get('token');
+
+            $em = $this->getDoctrine()->getEntityManager();
+            $repository = $em->getRepository('ApiBundle:User');
+
+            $user = $repository->findOneBy(array('token' => $token));
+
+            if($user){
+                $valideToken = $user->getValideToken();
+                $date = new \DateTime();
+
+                if($valideToken > $date){
+
+                    $data = json_decode($request->getContent(), true);
+
+                    $repository = $em->getRepository('ApiBundle:Idea');
+
+                    if(isset($data['id'])){
+                        if($idea = $repository->findOneBy(array('id' => $data['id']))) {
+
+                            $repository = $em->getRepository('ApiBundle:VoteUserIdea');
+
+                            if($voteUserIdea = $repository->findOneBy(array('idUser' => $user->getId(), 'idIdea' => $data['id']))){
+
+                                $em->remove($voteUserIdea);
+                                $em->flush();
+
+                                $data = array(
+                                    'vote' => false,
+                                );
+
+                                return $this->get('service_data_response')->JsonResponse($data);
+                            }else{
+
+                                $voteUserIdea = new VoteUserIdea();
+
+                                $voteUserIdea->setIdIdea($data['id']);
+                                $voteUserIdea->setIdUser($user->getId());
+
+                                $em->persist($voteUserIdea);
+                                $em->flush();
+
+                                $data = array(
+                                    'vote' => true,
+                                );
+
+                                return $this->get('service_data_response')->JsonResponse($data);
+                            }
+
+                        }else{
+                            return $this->get('service_errors_messages')->errorMessage("011");
+                        }
+                    }
+                    else{
+                        return $this->get('service_errors_messages')->errorMessage("002");
+                    }
+                }else{
+                    return $this->get('service_errors_messages')->errorMessage("005");
+                }
+            }else{
+                return $this->get('service_errors_messages')->errorMessage("004");
+            }
+        }catch(Exception $ex) {
+            return $this->get('service_errors_messages')->errorMessage("001");
+        }
+    }
 }
