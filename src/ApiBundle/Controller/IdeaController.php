@@ -63,7 +63,7 @@ class IdeaController extends Controller
                         $nbVotes = $qb->getQuery()->getSingleScalarResult();
 
                         $dateCreate = $idea->getPublicateDate();
-                        $date = $dateCreate->format('d/m/Y  H:i');
+                        $date = $dateCreate->format('d/m/Y à  H:i');
 
                         $tableIdeas[] = array(
                             'id' => $idea->getId(),
@@ -118,7 +118,26 @@ class IdeaController extends Controller
                         ->addOrderBy('i.publicateDate', 'DESC')
                         ->setMaxResults(5);
 
-                    return $this->get('service_data_response')->JsonResponse($data = $qb->getQuery()->getResult());
+                    $ideas = $qb->getQuery()->getResult();
+
+                    $tableIdeas = array();
+                    foreach ($ideas as $idea) {
+                        $dateCreate = $idea['publicateDate'];
+                        $date = $dateCreate->format('d/m/Y');
+                        $heure = $dateCreate->format('H:i');
+
+                        $tableIdeas[] = array(
+                            'idIdea' => $idea['idIdea'],
+                            'title' => $idea['title'],
+                            'nameAutor' => $idea['nameAutor'],
+                            'firstNameAutor' => $idea['firstNameAutor'],
+                            'publicateDate' => $date,
+                            'publicateHour' => $heure,
+                            'nbVote' => $idea['nbVote'],
+                        );
+                    }
+
+                    return $this->get('service_data_response')->JsonResponse($tableIdeas);
                 }else{
                     return $this->get('service_errors_messages')->errorMessage("005");
                 }

@@ -196,9 +196,46 @@ class CommunityController extends Controller
                         ->where('u.token = :token')
                         ->setParameters(array('token' => $token))
                     ;
-                    $data = $qb->getQuery()->getResult();
+                    $communities = $qb->getQuery()->getResult();
 
-                    return $this->get('service_data_response')->JsonResponse($data);
+                    $tableCommunities = array();
+                    foreach ($communities as $community) {
+
+                        $qb = $em->createQueryBuilder()
+                            ->select('count(uc.id)')
+                            ->from('ApiBundle:UserCommunity', 'uc')
+                            ->where('uc.idCommunity = :idCommunity')
+                            ->setParameters(array('idCommunity' => $community['idCommunity']))
+                            ->groupBy('uc.idCommunity')
+                        ;
+                        $nbUsers = $qb->getQuery()->getSingleScalarResult();
+
+                        $qb = $em->createQueryBuilder()
+                            ->select('count(i.idCommunauty) AS nbIdeas')
+                            ->from('ApiBundle:Idea', 'i')
+                            ->where('i.idCommunauty = :idCommunity')
+                            ->setParameters(array('idCommunity' => $community['idCommunity']))
+                            ->groupBy('i.idCommunauty')
+                        ;
+
+                        $nbIdeas = $qb->getQuery()->getOneOrNullResult();
+
+                        if($nbIdeas['nbIdeas'] == null){
+                            $nbIdeas = '0';
+                        }else{
+                            $nbIdeas = $nbIdeas['nbIdeas'];
+                        }
+
+                        $tableCommunities[] = array('idCommunity' => $community['idCommunity'],
+                            'idCommunity' => $community['idCommunity'],
+                            'nameCommunity' => $community['nameCommunity'],
+                            'descriptionCommunity' => $community['descriptionCommunity'],
+                            'nbUsers' => $nbUsers,
+                            'nbIdeas' => $nbIdeas,
+                        );
+                    }
+
+                    return $this->get('service_data_response')->JsonResponse($tableCommunities);
 
 
                 }else{
