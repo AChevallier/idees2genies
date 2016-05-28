@@ -195,6 +195,7 @@ class CommunityController extends Controller
                         ->innerJoin('ApiBundle:Community', 'c', 'WITH', 'uc.idCommunity = c.id')
                         ->where('u.token = :token')
                         ->setParameters(array('token' => $token))
+                        ->addOrderBy('c.name', 'ASC')
                     ;
                     $communities = $qb->getQuery()->getResult();
 
@@ -277,7 +278,9 @@ class CommunityController extends Controller
                                     ->innerJoin('ApiBundle:User', 'u', 'WITH', 'uc.idUser = u.id')
                                     ->innerJoin('ApiBundle:Community', 'c', 'WITH', 'uc.idCommunity = c.id')
                                     ->where('u.id = :id')
-                                    ->setParameters(array('id' => $id));
+                                    ->setParameters(array('id' => $id))
+                                    ->addOrderBy('c.name', 'ASC')
+                                    ;
                                 $data = $qb->getQuery()->getResult();
 
                                 return $this->get('service_data_response')->JsonResponse($data);
