@@ -76,6 +76,11 @@ api_community_user_communities:
     defaults: { _controller: ApiBundle:Community:userCommunities }
     methods:  [GET, POST]
 
+api_community_join:
+    path:     /community/join
+    defaults: { _controller: ApiBundle:Community:join }
+    methods:  [POST]
+
 
 #------------------------------------------------------
 # Idea Controller

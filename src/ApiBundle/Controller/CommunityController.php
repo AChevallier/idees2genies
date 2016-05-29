@@ -2,6 +2,7 @@
 
 namespace ApiBundle\Controller;
 
+use ApiBundle\Entity\UserCommunity;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use ApiBundle\Entity\Community;
@@ -24,29 +25,50 @@ class CommunityController extends Controller
             $user = $repository->findOneBy(array('token' => $token));
 
             if($user){
+                $idUser = $user->getId();
                 $valideToken = $user->getValideToken();
                 $date = new \DateTime();
 
                 if($valideToken > $date){
-                    if($user->getAdministrator() == true) {
+
+                    $qb = $em->createQueryBuilder()
+                        ->select('c.id as id, c.name AS nameCommunity, c.description AS descriptionCommunity')
+                        ->from('ApiBundle:Community', 'c')
+                        ->addOrderBy('c.name', 'ASC');
+
+                        $communities = $qb->getQuery()->getResult();
+
+                    foreach ($communities as $community) {
+                        $repository = $this->getDoctrine()->getRepository('ApiBundle:UserCommunity');
+                        $joinUser = $repository->findOneBy(array('idUser' => $idUser, 'idCommunity' => $community['id']));
+
+                        if($joinUser){
+                            $joinUser = true;
+                        }else{
+                            $joinUser = false;
+                        }
 
                         $qb = $em->createQueryBuilder()
-                            ->select('c.id as id, c.name AS nameCommunity, c.description AS descriptionCommunity')
-                            ->from('ApiBundle:Community', 'c')
+                            ->select('COUNT(uc.id)')
+                            ->from('ApiBundle:UserCommunity', 'uc')
+                            ->where('uc.idCommunity = :idCommunity')
+                            ->setParameters(array('idCommunity' => $community['id']))
                         ;
-                        $data = $qb->getQuery()->getResult();
+                        $nbUsers = $qb->getQuery()->getSingleScalarResult();
 
-                        $tableData = array(
-                            'communities' => $data
+                        $tableCommunities[] = array(
+                            'id' => $community['id'],
+                            'name' => $community['nameCommunity'],
+                            'description' => $community['descriptionCommunity'],
+                            'joinUser' => $joinUser,
+                            'nbUsers' => $nbUsers
                         );
-
-                        return $this->get('service_data_response')->JsonResponse($tableData);
-
-
                     }
-                    else{
-                        return $this->get('service_errors_messages')->errorMessage("007");
-                    }
+
+
+
+
+                        return $this->get('service_data_response')->JsonResponse($tableCommunities);
                 }else{
                     return $this->get('service_errors_messages')->errorMessage("005");
                 }
@@ -294,6 +316,76 @@ class CommunityController extends Controller
                     }
                     else{
                         return $this->get('service_errors_messages')->errorMessage("007");
+                    }
+                }else{
+                    return $this->get('service_errors_messages')->errorMessage("005");
+                }
+            }else{
+                return $this->get('service_errors_messages')->errorMessage("004");
+            }
+        }catch(Exception $ex) {
+            return $this->get('service_errors_messages')->errorMessage("001");
+        }
+    }
+
+    public function joinAction(Request $request)
+    {
+        try{
+            $token = $request->headers->get('token');
+
+            $em = $this->getDoctrine()->getEntityManager();
+            $repository = $em->getRepository('ApiBundle:User');
+
+            $user = $repository->findOneBy(array('token' => $token));
+
+            if($user){
+                $valideToken = $user->getValideToken();
+                $date = new \DateTime();
+
+                if($valideToken > $date){
+
+                    $data = json_decode($request->getContent(), true);
+
+                    $repository = $em->getRepository('ApiBundle:Community');
+
+                    if(isset($data['id'])){
+                        if($idea = $repository->findOneBy(array('id' => $data['id']))) {
+
+                            $repository = $em->getRepository('ApiBundle:UserCommunity');
+
+                            if($joinUserCommunity = $repository->findOneBy(array('idUser' => $user->getId(), 'idCommunity' => $data['id']))){
+
+                                $em->remove($joinUserCommunity);
+                                $em->flush();
+
+                                $data = array(
+                                    'join' => false,
+                                );
+
+                                return $this->get('service_data_response')->JsonResponse($data);
+                            }else{
+
+                                $joinUserCommunity = new UserCommunity();
+
+                                $joinUserCommunity->setIdCommunity($data['id']);
+                                $joinUserCommunity->setIdUser($user->getId());
+
+                                $em->persist($joinUserCommunity);
+                                $em->flush();
+
+                                $data = array(
+                                    'join' => true,
+                                );
+
+                                return $this->get('service_data_response')->JsonResponse($data);
+                            }
+
+                        }else{
+                            return $this->get('service_errors_messages')->errorMessage("011");
+                        }
+                    }
+                    else{
+                        return $this->get('service_errors_messages')->errorMessage("002");
                     }
                 }else{
                     return $this->get('service_errors_messages')->errorMessage("005");
