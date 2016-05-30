@@ -230,7 +230,7 @@ class UserController extends Controller
                         if($community = $repository->findOneBy(array('id' => $data['id']))) {
 
                             $qb = $em->createQueryBuilder()
-                                ->select('u.name AS nameUser, u.firstName AS firstNameUser')
+                                ->select('u.id AS idUser, u.name AS nameUser, u.firstName AS firstNameUser')
                                 ->from('ApiBundle:UserCommunity', 'uc')
                                 ->innerJoin('ApiBundle:User', 'u', 'WITH', 'u.id = uc.idUser')
                                 ->where('uc.idCommunity = :idCommunity')

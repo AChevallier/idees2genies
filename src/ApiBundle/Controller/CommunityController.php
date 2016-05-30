@@ -410,6 +410,7 @@ class CommunityController extends Controller
             $user = $repository->findOneBy(array('token' => $token));
 
             if($user){
+                $idUser = $user->getId();
                 $valideToken = $user->getValideToken();
                 $date = new \DateTime();
 
@@ -431,12 +432,40 @@ class CommunityController extends Controller
                                 ->where('c.id = :id')
                                 ->setParameters(array('id' => $data['id']))
                             ;
-                            $community = $qb->getQuery()->getSingleResult();
+                            $community = $qb->getQuery()->getOneOrNullResult();
+
+                            $qb = $em->createQueryBuilder()
+                                ->select('count(uc.id) AS nbUsers ')
+                                ->from('ApiBundle:UserCommunity', 'uc')
+                                ->where('uc.idCommunity = :idCommunity')
+                                ->setParameters(array('idCommunity' => $data['id']))
+                                ->groupBy('uc.idCommunity')
+                            ;
+                            $nbUsers = $qb->getQuery()->getOneOrNullResult();
+
+                            if($nbUsers == null){
+                                $nbUsers = '0';
+                            }else{
+                                $nbUsers = $nbUsers['nbUsers'];
+                            }
+
+                            $repository = $this->getDoctrine()->getRepository('ApiBundle:UserCommunity');
+                            $joinUser = $repository->findOneBy(array('idUser' => $idUser, 'idCommunity' => $community['id']));
+
+                            if($joinUser){
+                                $joinUser = true;
+                            }else{
+                                $joinUser = false;
+                            }
+
+
 
                             $data = array(
                                 'id' => $community['id'],
                                 'name' => $community['name'],
                                 'description' => $community['description'],
+                                'nbUsers' => $nbUsers,
+                                'joinUser' => $joinUser,
                             );
 
                             return $this->get('service_data_response')->JsonResponse($data);
