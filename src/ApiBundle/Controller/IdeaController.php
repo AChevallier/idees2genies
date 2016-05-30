@@ -88,6 +88,92 @@ class IdeaController extends Controller
         }
     }
 
+    // Fonction qui liste les idées d'une communauté
+    public function ideasCommunityAction(Request $request)
+    {
+        try{
+            $token = $request->headers->get('token');
+
+            $em = $this->getDoctrine()->getEntityManager();
+            $repository = $em->getRepository('ApiBundle:User');
+
+            $user = $repository->findOneBy(array('token' => $token));
+
+            if($user){
+                $valideToken = $user->getValideToken();
+                $idUser = $user->getId();
+                $date = new \DateTime();
+
+                if($valideToken > $date){
+
+                    $data = json_decode($request->getContent(), true);
+
+                    if(!empty($data['id']) && isset($data['id'])) {
+
+                        $repository = $em->getRepository('ApiBundle:Community');
+
+                        if($community = $repository->findOneBy(array('id' => $data['id']))) {
+
+                            $em = $this->getDoctrine()->getEntityManager();
+
+                            $repository = $em->getRepository('ApiBundle:Idea');
+                            $ideas = $repository->findBy(array('idCommunauty' => $data['id']), array('publicateDate' => 'DESC'));
+
+                            $tableIdeas = array();
+
+                            foreach ($ideas as $idea) {
+
+                                $repository = $this->getDoctrine()->getRepository('ApiBundle:VoteUserIdea');
+                                $voteUser = $repository->findOneBy(array('idUser' => $idUser, 'idIdea' => $idea->getId()));
+
+                                if ($voteUser) {
+                                    $voteUser = true;
+                                } else {
+                                    $voteUser = false;
+                                }
+
+                                $repository = $this->getDoctrine()->getRepository('ApiBundle:User');
+                                $auteur = $repository->findOneBy(array('id' => $idea->getIdUser()));
+
+                                $qb = $em->createQueryBuilder()
+                                    ->select('COUNT(vui.id)')
+                                    ->from('ApiBundle:VoteUserIdea', 'vui')
+                                    ->where('vui.idIdea = :idIdea')
+                                    ->setParameters(array('idIdea' => $idea->getId()));
+                                $nbVotes = $qb->getQuery()->getSingleScalarResult();
+
+                                $dateCreate = $idea->getPublicateDate();
+                                $date = $dateCreate->format('d/m/Y à  H:i');
+
+                                $tableIdeas[] = array(
+                                    'id' => $idea->getId(),
+                                    'title' => $idea->getTitle(),
+                                    'idea' => $idea->getIdea(),
+                                    'auteur' => $auteur->getFirstName() . ' ' . $auteur->getName(),
+                                    'date' => $date,
+                                    'voteUser' => $voteUser,
+                                    'nbVotes' => $nbVotes
+                                );
+                            }
+                            return $this->get('service_data_response')->JsonResponse($tableIdeas);
+                        }else{
+                            return $this->get('service_errors_messages')->errorMessage("010");
+                        }
+                    }else{
+                        return $this->get('service_errors_messages')->errorMessage("002");
+                    }
+
+                }else{
+                    return $this->get('service_errors_messages')->errorMessage("005");
+                }
+            }else{
+                return $this->get('service_errors_messages')->errorMessage("004");
+            }
+        }catch(Exception $ex) {
+            return $this->get('service_errors_messages')->errorMessage("001");
+        }
+    }
+
     // Fonction qui liste le top 5
     public function top5Action(Request $request)
     {

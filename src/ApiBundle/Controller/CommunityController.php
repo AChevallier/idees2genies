@@ -397,4 +397,70 @@ class CommunityController extends Controller
             return $this->get('service_errors_messages')->errorMessage("001");
         }
     }
+
+    // Récupère les information sur la communité demandée
+    public function getCommunityAction(Request $request)
+    {
+        try{
+            $token = $request->headers->get('token');
+
+            $em = $this->getDoctrine()->getEntityManager();
+            $repository = $em->getRepository('ApiBundle:User');
+
+            $user = $repository->findOneBy(array('token' => $token));
+
+            if($user){
+                $valideToken = $user->getValideToken();
+                $date = new \DateTime();
+
+                if($valideToken > $date){
+
+                    $data = json_decode($request->getContent(), true);
+                    $repository = $em->getRepository('ApiBundle:Community');
+
+                    if(!empty($data['id']) && isset($data['id'])){
+
+                        $repository = $em->getRepository('ApiBundle:Community');
+
+                        if($community = $repository->findOneBy(array('id' => $data['id']))) {
+
+
+                            $qb = $em->createQueryBuilder()
+                                ->select('c.id AS id, c.name AS name, c.description AS description')
+                                ->from('ApiBundle:Community', 'c')
+                                ->where('c.id = :id')
+                                ->setParameters(array('id' => $data['id']))
+                            ;
+                            $community = $qb->getQuery()->getSingleResult();
+
+                            $data = array(
+                                'id' => $community['id'],
+                                'name' => $community['name'],
+                                'description' => $community['description'],
+                            );
+
+                            return $this->get('service_data_response')->JsonResponse($data);
+                        }
+                        else{
+                            return $this->get('service_errors_messages')->errorMessage("010");
+                        }
+
+
+
+
+                    }else{
+                        return $this->get('service_errors_messages')->errorMessage("002");
+                    }
+
+
+                }else{
+                    return $this->get('service_errors_messages')->errorMessage("005");
+                }
+            }else{
+                return $this->get('service_errors_messages')->errorMessage("004");
+            }
+        }catch(Exception $ex) {
+            return $this->get('service_errors_messages')->errorMessage("001");
+        }
+    }
 }

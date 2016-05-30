@@ -47,6 +47,12 @@ api_user_is_valide_token:
     defaults: { _controller: ApiBundle:User:isValideToken }
     methods:  [POST]
 
+api_user_users_comunity:
+    path:     /user/usersCommunity
+    defaults: { _controller: ApiBundle:User:usersCommunity}
+    methods:  [POST]
+
+
 #------------------------------------------------------
 # Community Controller
 #------------------------------------------------------
@@ -81,6 +87,10 @@ api_community_join:
     defaults: { _controller: ApiBundle:Community:join }
     methods:  [POST]
 
+api_community_get_community:
+    path:     /community/getCommunity
+    defaults: { _controller: ApiBundle:Community:getCommunity }
+    methods:  [POST]
 
 #------------------------------------------------------
 # Idea Controller
@@ -104,4 +114,9 @@ api_idea_top5:
 api_idea_vote:
     path:     /idea/vote
     defaults: { _controller: ApiBundle:Idea:vote }
+    methods:  [POST]
+
+api_idea_ideas_community:
+    path:     /idea/ideasCommunity
+    defaults: { _controller: ApiBundle:Idea:ideasCommunity }
     methods:  [POST]
