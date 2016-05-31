@@ -74,7 +74,10 @@ class IdeaController extends Controller
                             ->setParameters(array('idIdea' => $idea->getId()));
                             ;
 
+                        $comments = null;
                         $comments = $qb->getQuery()->getResult();
+
+                        $tableComments = array();
 
                         if($comments){
                             foreach ($comments as $comment) {
@@ -85,8 +88,6 @@ class IdeaController extends Controller
                                     'authorFirstName' => $comment['firstNameAuthorComment'],
                                 );
                             }
-                        }else{
-                            $tableComments = array();
                         }
 
                         $qb = $em->createQueryBuilder()
