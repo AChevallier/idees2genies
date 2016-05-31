@@ -46,6 +46,9 @@ class ErrorsMessages
             case "011":
                 $arr = array('code_metier' => '011', 'message' => "Cette idée n'existe pas.");
                 break;
+            case "012":
+                $arr = array('code_metier' => '012', 'message' => "Ce commentaire n'existe pas.");
+                break;
             default:
                 $arr = array('code_metier' => '001', 'message' => "Une erreur interne s'est produite.");
         }

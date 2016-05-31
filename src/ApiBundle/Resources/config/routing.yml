@@ -120,3 +120,12 @@ api_idea_ideas_community:
     path:     /idea/ideasCommunity
     defaults: { _controller: ApiBundle:Idea:ideasCommunity }
     methods:  [POST]
+
+#------------------------------------------------------
+# Comment Controller
+#------------------------------------------------------
+
+api_comment_add:
+    path:     /comment/add
+    defaults: { _controller: ApiBundle:Comment:add }
+    methods:  [POST]

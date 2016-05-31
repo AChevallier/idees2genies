@@ -2,14 +2,14 @@
 
 namespace ApiBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Config\Definition\Exception\Exception;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use ApiBundle\Entity\User;
-use ApiBundle\Entity\Idea;
-use ApiBundle\Entity\VoteUserIdea;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
+    use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+    use Symfony\Component\Config\Definition\Exception\Exception;
+    use Symfony\Component\HttpFoundation\JsonResponse;
+    use ApiBundle\Entity\User;
+    use ApiBundle\Entity\Idea;
+    use ApiBundle\Entity\VoteUserIdea;
+    use Symfony\Component\HttpFoundation\Response;
+    use Symfony\Component\HttpFoundation\Request;
 
 
 class IdeaController extends Controller
@@ -72,7 +72,7 @@ class IdeaController extends Controller
                             'auteur' => $auteur->getFirstName().' '.$auteur->getName(),
                             'date' => $date,
                             'voteUser' => $voteUser,
-                            'nbVotes' => $nbVotes
+                            'nbVotes' => $nbVotes,
                         );
                     }
                     return $this->get('service_data_response')->JsonResponse($tableIdeas);
@@ -307,6 +307,7 @@ class IdeaController extends Controller
         }
     }
 
+    // Fontion qui permet de voter
     public function voteAction(Request $request)
     {
         try{

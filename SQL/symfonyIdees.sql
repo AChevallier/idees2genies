@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  localhost:8889
--- Généré le :  Sam 28 Mai 2016 à 14:15
+-- Généré le :  Mar 31 Mai 2016 à 14:10
 -- Version du serveur :  5.5.42
 -- Version de PHP :  5.6.10
 
@@ -19,6 +19,27 @@ SET time_zone = "+00:00";
 --
 -- Base de données :  `symfonyIdees`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `comment`
+--
+
+CREATE TABLE `comment` (
+  `id` int(11) NOT NULL,
+  `comment` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `idIdea` int(11) NOT NULL,
+  `idUser` int(11) NOT NULL,
+  `publicateDate` datetime NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Contenu de la table `comment`
+--
+
+INSERT INTO `comment` (`id`, `comment`, `idIdea`, `idUser`, `publicateDate`) VALUES
+(1, 'Hello', 1, 2, '2016-05-31 13:35:10');
 
 -- --------------------------------------------------------
 
@@ -50,12 +71,12 @@ CREATE TABLE `community` (
 --
 
 INSERT INTO `community` (`id`, `name`, `description`) VALUES
-(1, 'Licence PRISM', 'Le groupe concerne la classe.'),
-(7, 'Paris Aéroport', 'Le groupe de la famille'),
-(8, 'DUT GEII', 'Un forum d''entre aide.'),
-(9, 'Licence SRSI', 'Un groupe de partage.'),
-(10, 'Apple', 'Un groupe de partage.'),
-(11, 'Bouygues Telecom', 'Un groupe de partage.');
+(1, 'Licence PRISM', 'Oportunum est, ut arbitror, explanare nunc causam, quae ad exitium praecipitem Aginatium inpulit iam inde a priscis maioribus nobilem, ut locuta est pertinacior fama. nec enim super hoc ulla documentorum rata est fides.'),
+(7, 'Paris Aéroport', 'Sed si ille hac tam eximia fortuna propter utilitatem rei publicae frui non properat, ut omnia illa conficiat, quid ego, senator, facere debeo, quem, etiamsi ille aliud vellet, rei publicae consulere oporteret?'),
+(8, 'DUT GEII', 'Has autem provincias, quas Orontes ambiens amnis imosque pedes Cassii montis illius celsi praetermeans funditur in Parthenium mare, Gnaeus Pompeius superato Tigrane regnis Armeniorum abstractas dicioni Romanae coniunxit.'),
+(9, 'Licence SRSI', 'Procedente igitur mox tempore cum adventicium nihil inveniretur, relicta ora maritima in Lycaoniam adnexam Isauriae se contulerunt ibique densis intersaepientes itinera praetenturis provincialium et viatorum opibus pascebantur.'),
+(10, 'Apple', '<b>Ideo</b> urbs venerabilis post superbas efferatarum gentium cervices oppressas latasque leges fundamenta libertatis et retinacula sempiterna velut frugi parens et prudens et dives Caesaribus tamquam liberis suis regenda patrimonii iura permisit.'),
+(11, 'Bouygues Telecom', 'Nunc vero inanes flatus quorundam vile esse quicquid extra urbis pomerium nascitur aestimant praeter orbos et caelibes, nec credi potest qua obsequiorum diversitate coluntur homines sine liberis Romae.');
 
 -- --------------------------------------------------------
 
@@ -97,8 +118,8 @@ CREATE TABLE `user` (
   `firstName` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `email` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `token` varchar(250) COLLATE utf8_unicode_ci NOT NULL,
-  `valideToken` datetime NOT NULL,
+  `token` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `valideToken` datetime DEFAULT NULL,
   `administrator` tinyint(1) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -107,8 +128,8 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `name`, `firstName`, `email`, `password`, `token`, `valideToken`, `administrator`) VALUES
-(2, 'Vandycke', 'Steve', 'svandycke@gmail.com', 'c3284d0f94606de1fd2af172aba15bf3', '63515075dc24006ed00fb7ae98a271c0807644dd', '2016-05-29 11:35:04', 1),
-(62, 'Chevallier', 'Alexandre', 'alexandre.chevallier4@gmail.com', '8f8c1ff4ce76e757e2000ed4e6926af4', '8a256e92114be8c7c2ecf92c47d21e3f401456b2', '2016-05-28 14:33:43', 1);
+(2, 'Vandycke', 'Steve', 'svandycke@gmail.com', 'c3284d0f94606de1fd2af172aba15bf3', '4b86a3d00e314d88c999560385605491031d4679', '2016-06-01 10:33:08', 0),
+(62, 'Chevallier', 'Alexandre', 'alexandre.chevallier4@gmail.com', '8f8c1ff4ce76e757e2000ed4e6926af4', '4c4e9214c245cc08596b7ac3a1a4a1b7e54734f7', '2016-06-01 07:42:57', 1);
 
 -- --------------------------------------------------------
 
@@ -120,19 +141,18 @@ CREATE TABLE `user_community` (
   `id` int(11) NOT NULL,
   `idCommunity` int(11) NOT NULL,
   `idUser` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Contenu de la table `user_community`
 --
 
 INSERT INTO `user_community` (`id`, `idCommunity`, `idUser`) VALUES
-(6, 7, 2),
-(7, 1, 62),
-(8, 1, 2),
-(9, 10, 62),
-(10, 9, 62),
-(11, 11, 2);
+(41, 8, 62),
+(80, 1, 2),
+(82, 9, 62),
+(85, 1, 62),
+(90, 11, 2);
 
 -- --------------------------------------------------------
 
@@ -144,26 +164,32 @@ CREATE TABLE `vote_user_idea` (
   `id` int(11) NOT NULL,
   `idUser` int(11) NOT NULL,
   `idIdea` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=105 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=119 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Contenu de la table `vote_user_idea`
 --
 
 INSERT INTO `vote_user_idea` (`id`, `idUser`, `idIdea`) VALUES
-(85, 62, 3),
-(93, 2, 7),
 (95, 2, 9),
 (96, 62, 8),
 (97, 62, 7),
 (98, 62, 1),
-(99, 62, 10),
-(101, 2, 10),
-(104, 2, 8);
+(104, 2, 8),
+(107, 2, 7),
+(116, 62, 3),
+(117, 62, 10),
+(118, 2, 10);
 
 --
 -- Index pour les tables exportées
 --
+
+--
+-- Index pour la table `comment`
+--
+ALTER TABLE `comment`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Index pour la table `commentary_idea`
@@ -206,6 +232,11 @@ ALTER TABLE `vote_user_idea`
 --
 
 --
+-- AUTO_INCREMENT pour la table `comment`
+--
+ALTER TABLE `comment`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+--
 -- AUTO_INCREMENT pour la table `commentary_idea`
 --
 ALTER TABLE `commentary_idea`
@@ -229,12 +260,12 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT pour la table `user_community`
 --
 ALTER TABLE `user_community`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=91;
 --
 -- AUTO_INCREMENT pour la table `vote_user_idea`
 --
 ALTER TABLE `vote_user_idea`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=105;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=119;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
