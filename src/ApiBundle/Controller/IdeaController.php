@@ -8,6 +8,7 @@ namespace ApiBundle\Controller;
     use ApiBundle\Entity\User;
     use ApiBundle\Entity\Idea;
     use ApiBundle\Entity\VoteUserIdea;
+    use ApiBundle\Entity\Comment;
     use Symfony\Component\HttpFoundation\Response;
     use Symfony\Component\HttpFoundation\Request;
 
@@ -65,6 +66,37 @@ class IdeaController extends Controller
                         $dateCreate = $idea->getPublicateDate();
                         $date = $dateCreate->format('d/m/Y à  H:i');
 
+                        $qb = $em->createQueryBuilder()
+                            ->select('c.id AS idComment ,c.comment AS commentComment, u.name AS nameAuthorComment, u.firstName AS firstNameAuthorComment')
+                            ->from('ApiBundle:Comment', 'c')
+                            ->innerJoin('ApiBundle:User', 'u', 'WITH', 'u.id = c.idUser')
+                            ->where('c.idIdea = :idIdea')
+                            ->setParameters(array('idIdea' => $idea->getId()));
+                            ;
+
+                        $comments = $qb->getQuery()->getResult();
+
+                        if($comments){
+                            foreach ($comments as $comment) {
+                                $tableComments[] = array(
+                                    'id' => $comment['idComment'],
+                                    'comment' => $comment['commentComment'],
+                                    'authorName' => $comment['nameAuthorComment'],
+                                    'authorFirstName' => $comment['firstNameAuthorComment'],
+                                );
+                            }
+                        }else{
+                            $tableComments = array();
+                        }
+
+                        $qb = $em->createQueryBuilder()
+                            ->select('COUNT(c.id)')
+                            ->from('ApiBundle:Comment', 'c')
+                            ->where('c.idIdea = :idIdea')
+                            ->setParameters(array('idIdea' => $idea->getId()))
+                        ;
+                        $nbComments = $qb->getQuery()->getSingleScalarResult();
+
                         $tableIdeas[] = array(
                             'id' => $idea->getId(),
                             'title' => $idea->getTitle(),
@@ -73,6 +105,8 @@ class IdeaController extends Controller
                             'date' => $date,
                             'voteUser' => $voteUser,
                             'nbVotes' => $nbVotes,
+                            'comments' => $tableComments,
+                            'nbComments' => $nbComments,
                         );
                     }
                     return $this->get('service_data_response')->JsonResponse($tableIdeas);
