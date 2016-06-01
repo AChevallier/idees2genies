@@ -15,6 +15,10 @@ class UserController extends Controller
 {
 
     // Fonction homePage de user
+
+
+
+
     public function indexAction()
     {
         $repository = $this->getDoctrine()->getRepository('ApiBundle:User');

@@ -459,7 +459,6 @@ class CommunityController extends Controller
                             }
 
 
-
                             $data = array(
                                 'id' => $community['id'],
                                 'name' => $community['name'],
@@ -473,10 +472,6 @@ class CommunityController extends Controller
                         else{
                             return $this->get('service_errors_messages')->errorMessage("010");
                         }
-
-
-
-
                     }else{
                         return $this->get('service_errors_messages')->errorMessage("002");
                     }

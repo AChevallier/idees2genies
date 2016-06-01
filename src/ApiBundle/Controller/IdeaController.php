@@ -121,7 +121,15 @@ class IdeaController extends Controller
                         ;
                         $nbComments = $qb->getQuery()->getSingleScalarResult();
 
-                        $tableIdeas[] = array(
+                        $repository = $this->getDoctrine()->getRepository('ApiBundle:UserCommunity');
+                        $userCanComment = $repository->findOneBy(array('idUser' => $idUser, 'idCommunity' => $idea->getId()));
+
+                        if($userCanComment || ($idea->getIdCommunauty() == "NULL")){
+                            $userCanComment = true;
+                        }else{
+                            $userCanComment = false;
+                        }
+                            $tableIdeas[] = array(
                             'id' => $idea->getId(),
                             'title' => $idea->getTitle(),
                             'idea' => $idea->getIdea(),
@@ -131,6 +139,7 @@ class IdeaController extends Controller
                             'nbVotes' => $nbVotes,
                             'comments' => $tableComments,
                             'nbComments' => $nbComments,
+                            'userCanComment' => $userCanComment,
                         );
                     }
                     return $this->get('service_data_response')->JsonResponse($tableIdeas);
@@ -259,6 +268,17 @@ class IdeaController extends Controller
                                 ;
                                 $nbComments = $qb->getQuery()->getSingleScalarResult();
 
+                                $userCanComment = null;
+
+                                $repository = $this->getDoctrine()->getRepository('ApiBundle:UserCommunity');
+                                $userCanComment = $repository->findOneBy(array('idUser' => $idUser, 'idCommunity' => $idea->getIdCommunauty()));
+
+                           if($userCanComment || ($idea->getIdCommunauty() == "NULL")){
+                                    $userCanComment = true;
+                                }else{
+                                    $userCanComment = false;
+                                }
+
                                 $tableIdeas[] = array(
                                     'id' => $idea->getId(),
                                     'title' => $idea->getTitle(),
@@ -269,6 +289,7 @@ class IdeaController extends Controller
                                     'nbVotes' => $nbVotes,
                                     'comments' => $tableComments,
                                     'nbComments' => $nbComments,
+                                    'userCanComment' => $userCanComment,
                                 );
                             }
                             return $this->get('service_data_response')->JsonResponse($tableIdeas);
@@ -311,7 +332,7 @@ class IdeaController extends Controller
                     $em = $this->getDoctrine()->getEntityManager();
 
                     $qb = $em->createQueryBuilder()
-                        ->select('vui.idIdea AS idIdea, i.title AS title, u.name AS nameAutor, u.firstName AS firstNameAutor, i.publicateDate AS publicateDate, count(vui.id) AS nbVote')
+                        ->select('vui.idIdea AS idIdea, i.title AS title, i.idCommunauty AS idIdCfirstName AS firstNameAutor, i.publicateDate AS publicateDate, count(vui.id) AS nbVote')
                         ->from('ApiBundle:VoteUserIdea', 'vui')
                         ->innerJoin('ApiBundle:Idea', 'i', 'WITH', 'i.id = vui.idIdea')
                         ->innerJoin('ApiBundle:User', 'u', 'WITH', 'i.idUser = u.id')
@@ -324,7 +345,8 @@ class IdeaController extends Controller
 
                     $tableIdeas = array();
                     foreach ($ideas as $idea) {
-                        $dateCreate = $idea['publicateDate'];
+
+                       $dateCreate = $idea['publicateDate'];
                         $date = $dateCreate->format('d/m/Y');
                         $heure = $dateCreate->format('H:i');
 
@@ -493,3 +515,4 @@ class IdeaController extends Controller
         }
     }
 }
+
