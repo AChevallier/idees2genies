@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  localhost:8889
--- Généré le :  Mar 31 Mai 2016 à 14:10
+-- Généré le :  Mer 01 Juin 2016 à 13:00
 -- Version du serveur :  5.5.42
 -- Version de PHP :  5.6.10
 
@@ -32,14 +32,21 @@ CREATE TABLE `comment` (
   `idIdea` int(11) NOT NULL,
   `idUser` int(11) NOT NULL,
   `publicateDate` datetime NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Contenu de la table `comment`
 --
 
 INSERT INTO `comment` (`id`, `comment`, `idIdea`, `idUser`, `publicateDate`) VALUES
-(1, 'Hello', 1, 2, '2016-05-31 13:35:10');
+(2, 'C''est super !!', 1, 2, '2016-05-31 00:00:00'),
+(3, 'Tu as une trop bonne idée !', 10, 2, '2016-05-31 15:19:55'),
+(5, 'Bonjour', 8, 2, '2016-05-31 15:39:21'),
+(6, 'Bonjour comment vas tu ? ', 10, 2, '2016-05-31 16:01:27'),
+(14, 'Je suis d''accord avec toi !', 10, 62, '2016-06-01 11:14:05'),
+(15, 'Je suis d''accord avec toi ! Je suis d''accord avec toi ! Je suis d''accord avec toi !', 10, 62, '2016-06-01 11:14:47'),
+(16, 'C''est normal, c''est son boulot !! ', 3, 62, '2016-06-01 11:18:39'),
+(17, 'Il sert à rien ton commentaire :) :) :) :)', 3, 2, '2016-06-01 12:39:19');
 
 -- --------------------------------------------------------
 
@@ -121,15 +128,16 @@ CREATE TABLE `user` (
   `token` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
   `valideToken` datetime DEFAULT NULL,
   `administrator` tinyint(1) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Contenu de la table `user`
 --
 
 INSERT INTO `user` (`id`, `name`, `firstName`, `email`, `password`, `token`, `valideToken`, `administrator`) VALUES
-(2, 'Vandycke', 'Steve', 'svandycke@gmail.com', 'c3284d0f94606de1fd2af172aba15bf3', '4b86a3d00e314d88c999560385605491031d4679', '2016-06-01 10:33:08', 0),
-(62, 'Chevallier', 'Alexandre', 'alexandre.chevallier4@gmail.com', '8f8c1ff4ce76e757e2000ed4e6926af4', '4c4e9214c245cc08596b7ac3a1a4a1b7e54734f7', '2016-06-01 07:42:57', 1);
+(2, 'Vandycke', 'Steve', 'svandycke@gmail.com', 'c3284d0f94606de1fd2af172aba15bf3', 'e25643ce7983c7dbf2ebf7e03d4dce740702a6e2', '2016-06-02 12:37:52', 0),
+(62, 'Chevallier', 'Alexandre', 'alexandre.chevallier4@gmail.com', '8f8c1ff4ce76e757e2000ed4e6926af4', '3fab1e3e2aad15b23f937b75f9672f9b3d943977', '2016-06-02 08:15:12', 1),
+(63, 'GRIMONT', 'Charles', 'charlesa.grimont@gmail.com', '7b8de785573232b500a9f8f2f32d1eee', NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -141,7 +149,7 @@ CREATE TABLE `user_community` (
   `id` int(11) NOT NULL,
   `idCommunity` int(11) NOT NULL,
   `idUser` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=93 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Contenu de la table `user_community`
@@ -157,6 +165,25 @@ INSERT INTO `user_community` (`id`, `idCommunity`, `idUser`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `vote_user_comment`
+--
+
+CREATE TABLE `vote_user_comment` (
+  `id` int(11) NOT NULL,
+  `idUser` int(11) NOT NULL,
+  `idComment` int(11) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Contenu de la table `vote_user_comment`
+--
+
+INSERT INTO `vote_user_comment` (`id`, `idUser`, `idComment`) VALUES
+(2, 62, 2);
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `vote_user_idea`
 --
 
@@ -164,22 +191,20 @@ CREATE TABLE `vote_user_idea` (
   `id` int(11) NOT NULL,
   `idUser` int(11) NOT NULL,
   `idIdea` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=119 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=135 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Contenu de la table `vote_user_idea`
 --
 
 INSERT INTO `vote_user_idea` (`id`, `idUser`, `idIdea`) VALUES
-(95, 2, 9),
 (96, 62, 8),
 (97, 62, 7),
 (98, 62, 1),
-(104, 2, 8),
 (107, 2, 7),
-(116, 62, 3),
-(117, 62, 10),
-(118, 2, 10);
+(119, 2, 9),
+(133, 2, 8),
+(134, 2, 10);
 
 --
 -- Index pour les tables exportées
@@ -222,6 +247,12 @@ ALTER TABLE `user_community`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Index pour la table `vote_user_comment`
+--
+ALTER TABLE `vote_user_comment`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Index pour la table `vote_user_idea`
 --
 ALTER TABLE `vote_user_idea`
@@ -235,7 +266,7 @@ ALTER TABLE `vote_user_idea`
 -- AUTO_INCREMENT pour la table `comment`
 --
 ALTER TABLE `comment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=18;
 --
 -- AUTO_INCREMENT pour la table `commentary_idea`
 --
@@ -255,17 +286,22 @@ ALTER TABLE `idea`
 -- AUTO_INCREMENT pour la table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=63;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=64;
 --
 -- AUTO_INCREMENT pour la table `user_community`
 --
 ALTER TABLE `user_community`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=91;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=93;
+--
+-- AUTO_INCREMENT pour la table `vote_user_comment`
+--
+ALTER TABLE `vote_user_comment`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT pour la table `vote_user_idea`
 --
 ALTER TABLE `vote_user_idea`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=119;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=135;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
