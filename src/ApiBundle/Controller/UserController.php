@@ -39,58 +39,36 @@ class UserController extends Controller
     public function addAction(Request $request)
     {
         try{
-
-            $token = $request->headers->get('token');
-
             $em = $this->getDoctrine()->getEntityManager();
+            $data = json_decode($request->getContent(), true);
             $repository = $em->getRepository('ApiBundle:User');
 
-            $user = $repository->findOneBy(array('token' => $token));
+            if (!empty(isset($data['name'])) && !empty(isset($data['firstName'])) && !empty(isset($data['email'])) && !empty(isset($data['password'])) && ($data['administrator'] == "1" || $data['administrator'] == "0") && isset($data['administrator'])) {
+                if (!$user = $repository->findOneBy(array('email' => $data['email']))) {
+                    $a = new User();
+                    $a->setFirstName($data['firstName']);
+                    $a->setName($data['name']);
+                    $a->setEmail($data['email']);
+                    $a->setPassword(md5($data['password']));
+                    $a->setAdministrator($data['administrator']);
 
-            if($user){
-                $valideToken = $user->getValideToken();
-                $date = new \DateTime();
+                    $em->persist($a);
+                    $em->flush();
 
-                if($valideToken > $date){
-                    if($user->getAdministrator() == true) {
-                        $data = json_decode($request->getContent(), true);
+                    $user = $repository->findOneBy(array('email' => $data['email']));
+                    $data = array(
+                        'id' => $user->getId(),
+                        'name' => $user->getName(),
+                        'firstName' => $user->getFirstName(),
+                        'email' => $user->getEmail()
+                    );
+                    return $this->get('service_data_response')->JsonResponse($data);
 
-                        if (!empty(isset($data['name'])) && !empty(isset($data['firstName'])) && !empty(isset($data['email'])) && !empty(isset($data['password'])) && ($data['administrator'] == "1" || $data['administrator'] == "0") && isset($data['administrator'])) {
-                            if (!$user = $repository->findOneBy(array('email' => $data['email']))) {
-                                $a = new User();
-                                $a->setFirstName($data['firstName']);
-                                $a->setName($data['name']);
-                                $a->setEmail($data['email']);
-                                $a->setPassword(md5($data['password']));
-                                $a->setAdministrator($data['administrator']);
-
-                                $em->persist($a);
-                                $em->flush();
-
-                                $user = $repository->findOneBy(array('email' => $data['email']));
-                                $data = array(
-                                    'id' => $user->getId(),
-                                    'name' => $user->getName(),
-                                    'firstName' => $user->getFirstName(),
-                                    'email' => $user->getEmail()
-                                );
-                                return $this->get('service_data_response')->JsonResponse($data);
-
-                            } else {
-                                return $this->get('service_errors_messages')->errorMessage("006");
-                            }
-                        } else {
-                            return $this->get('service_errors_messages')->errorMessage("002");
-                        }
-                    }
-                    else{
-                        return $this->get('service_errors_messages')->errorMessage("007");
-                    }
-                }else{
-                    return $this->get('service_errors_messages')->errorMessage("005");
+                } else {
+                    return $this->get('service_errors_messages')->errorMessage("006");
                 }
-            }else{
-                return $this->get('service_errors_messages')->errorMessage("004");
+            } else {
+                return $this->get('service_errors_messages')->errorMessage("002");
             }
         }catch(Exception $ex) {
             return $this->get('service_errors_messages')->errorMessage("001");

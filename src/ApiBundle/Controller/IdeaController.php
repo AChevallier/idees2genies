@@ -67,7 +67,7 @@ class IdeaController extends Controller
                         $date = $dateCreate->format('d/m/Y à  H:i');
 
                         $qb = $em->createQueryBuilder()
-                            ->select('c.id AS idComment ,c.comment AS commentComment, u.name AS nameAuthorComment, u.firstName AS firstNameAuthorComment')
+                            ->select('c.id AS idComment ,c.comment AS commentComment, u.name AS nameAuthorComment, u.firstName AS firstNameAuthorComment, c.publicateDate AS publicateDate')
                             ->from('ApiBundle:Comment', 'c')
                             ->innerJoin('ApiBundle:User', 'u', 'WITH', 'u.id = c.idUser')
                             ->where('c.idIdea = :idIdea')
@@ -81,11 +81,16 @@ class IdeaController extends Controller
 
                         if($comments){
                             foreach ($comments as $comment) {
+
+                                $dateCreate = $comment['publicateDate'];
+                                $date = $dateCreate->format('d/m/Y à  H:i');
+
                                 $tableComments[] = array(
                                     'id' => $comment['idComment'],
                                     'comment' => $comment['commentComment'],
                                     'authorName' => $comment['nameAuthorComment'],
                                     'authorFirstName' => $comment['firstNameAuthorComment'],
+                                    'publicateDate' => $date,
                                 );
                             }
                         }
@@ -180,6 +185,43 @@ class IdeaController extends Controller
                                 $dateCreate = $idea->getPublicateDate();
                                 $date = $dateCreate->format('d/m/Y à  H:i');
 
+                                $qb = $em->createQueryBuilder()
+                                    ->select('c.id AS idComment ,c.comment AS commentComment, u.name AS nameAuthorComment, u.firstName AS firstNameAuthorComment, c.publicateDate AS publicateDate')
+                                    ->from('ApiBundle:Comment', 'c')
+                                    ->innerJoin('ApiBundle:User', 'u', 'WITH', 'u.id = c.idUser')
+                                    ->where('c.idIdea = :idIdea')
+                                    ->setParameters(array('idIdea' => $idea->getId()));
+                                ;
+
+                                $comments = null;
+                                $comments = $qb->getQuery()->getResult();
+
+                                $tableComments = array();
+
+                                if($comments){
+                                    foreach ($comments as $comment) {
+
+                                        $dateCreate = $comment['publicateDate'];
+                                        $date = $dateCreate->format('d/m/Y à  H:i');
+
+                                        $tableComments[] = array(
+                                            'id' => $comment['idComment'],
+                                            'comment' => $comment['commentComment'],
+                                            'authorName' => $comment['nameAuthorComment'],
+                                            'authorFirstName' => $comment['firstNameAuthorComment'],
+                                            'publicateDate' => $date,
+                                        );
+                                    }
+                                }
+
+                                $qb = $em->createQueryBuilder()
+                                    ->select('COUNT(c.id)')
+                                    ->from('ApiBundle:Comment', 'c')
+                                    ->where('c.idIdea = :idIdea')
+                                    ->setParameters(array('idIdea' => $idea->getId()))
+                                ;
+                                $nbComments = $qb->getQuery()->getSingleScalarResult();
+
                                 $tableIdeas[] = array(
                                     'id' => $idea->getId(),
                                     'title' => $idea->getTitle(),
@@ -187,7 +229,9 @@ class IdeaController extends Controller
                                     'auteur' => $auteur->getFirstName() . ' ' . $auteur->getName(),
                                     'date' => $date,
                                     'voteUser' => $voteUser,
-                                    'nbVotes' => $nbVotes
+                                    'nbVotes' => $nbVotes,
+                                    'comments' => $tableComments,
+                                    'nbComments' => $nbComments,
                                 );
                             }
                             return $this->get('service_data_response')->JsonResponse($tableIdeas);
@@ -257,7 +301,6 @@ class IdeaController extends Controller
                             'nbVote' => $idea['nbVote'],
                         );
                     }
-
                     return $this->get('service_data_response')->JsonResponse($tableIdeas);
                 }else{
                     return $this->get('service_errors_messages')->errorMessage("005");
