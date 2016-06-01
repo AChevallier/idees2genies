@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use ApiBundle\Entity\User;
 use ApiBundle\Entity\Idea;
 use ApiBundle\Entity\Comment;
-use ApiBundle\Entity\VoteUserIdea;
+use ApiBundle\Entity\VoteUserComment;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -90,7 +90,6 @@ class CommentController extends Controller
                 if($valideToken > $date){
 
                     $data = json_decode($request->getContent(), true);
-
                     $repository = $em->getRepository('ApiBundle:Comment');
 
                     if(isset($data['id'])){

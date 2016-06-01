@@ -82,6 +82,22 @@ class IdeaController extends Controller
                         if($comments){
                             foreach ($comments as $comment) {
 
+                                $qb = $em->createQueryBuilder()
+                                    ->select('COUNT(vuc.id)')
+                                    ->from('ApiBundle:VoteUserComment', 'vuc')
+                                    ->where('vuc.idComment = :idComment')
+                                    ->setParameters(array('idComment' => $comment['idComment']));
+                                $nbCommentsVotes = $qb->getQuery()->getSingleScalarResult();
+
+                                $repository = $this->getDoctrine()->getRepository('ApiBundle:VoteUserComment');
+                                $voteUserComment = $repository->findOneBy(array('idUser' => $idUser, 'idComment' => $comment['idComment']));
+
+                                if($voteUserComment){
+                                    $voteUserComment = true;
+                                }else{
+                                    $voteUserComment = false;
+                                }
+
                                 $dateCreate = $comment['publicateDate'];
                                 $date = $dateCreate->format('d/m/Y à  H:i');
 
@@ -91,6 +107,8 @@ class IdeaController extends Controller
                                     'authorName' => $comment['nameAuthorComment'],
                                     'authorFirstName' => $comment['firstNameAuthorComment'],
                                     'publicateDate' => $date,
+                                    'nbCommentsVotes' => $nbCommentsVotes,
+                                    'voteUserComment' => $voteUserComment,
                                 );
                             }
                         }
@@ -182,6 +200,7 @@ class IdeaController extends Controller
                                     ->setParameters(array('idIdea' => $idea->getId()));
                                 $nbVotes = $qb->getQuery()->getSingleScalarResult();
 
+
                                 $dateCreate = $idea->getPublicateDate();
                                 $date = $dateCreate->format('d/m/Y à  H:i');
 
@@ -201,6 +220,22 @@ class IdeaController extends Controller
                                 if($comments){
                                     foreach ($comments as $comment) {
 
+                                        $qb = $em->createQueryBuilder()
+                                            ->select('COUNT(vuc.id)')
+                                            ->from('ApiBundle:VoteUserComment', 'vuc')
+                                            ->where('vuc.idComment = :idComment')
+                                            ->setParameters(array('idComment' => $comment['idComment']));
+                                        $nbCommentsVotes = $qb->getQuery()->getSingleScalarResult();
+
+                                        $repository = $this->getDoctrine()->getRepository('ApiBundle:VoteUserComment');
+                                        $voteUserComment = $repository->findOneBy(array('idUser' => $idUser, 'idComment' => $comment['idComment']));
+
+                                        if($voteUserComment){
+                                            $voteUserComment = true;
+                                        }else{
+                                            $voteUserComment = false;
+                                        }
+
                                         $dateCreate = $comment['publicateDate'];
                                         $date = $dateCreate->format('d/m/Y à  H:i');
 
@@ -210,6 +245,8 @@ class IdeaController extends Controller
                                             'authorName' => $comment['nameAuthorComment'],
                                             'authorFirstName' => $comment['firstNameAuthorComment'],
                                             'publicateDate' => $date,
+                                            'nbCommentsVotes' => $nbCommentsVotes,
+                                            'voteUserComment' => $voteUserComment,
                                         );
                                     }
                                 }

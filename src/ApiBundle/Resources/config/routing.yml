@@ -129,3 +129,8 @@ api_comment_add:
     path:     /comment/add
     defaults: { _controller: ApiBundle:Comment:add }
     methods:  [POST]
+
+api_comment_vote:
+    path:     /comment/vote
+    defaults: { _controller: ApiBundle:Comment:vote}
+    methods:  [POST]
