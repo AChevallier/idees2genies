@@ -8,6 +8,7 @@ namespace ApiBundle\Controller;
     use ApiBundle\Entity\User;
     use ApiBundle\Entity\Idea;
     use ApiBundle\Entity\VoteUserIdea;
+    use ApiBundle\Entity\Community;
     use ApiBundle\Entity\Comment;
     use Symfony\Component\HttpFoundation\Response;
     use Symfony\Component\HttpFoundation\Request;
@@ -42,6 +43,19 @@ class IdeaController extends Controller
                     $tableIdeas = array();
 
                     foreach ($ideas as $idea) {
+
+                        $idCommunityIdea = "";
+                        $nameCommunityIdea = "";
+
+                        if($idea->getIdCommunauty() != ""){
+                            $repository = $em->getRepository('ApiBundle:Community');
+                            $community = $repository->findOneBy(array('id' => $idea->getIdCommunauty()));
+
+                            if($community){
+                                $idCommunityIdea = $community->getId();
+                                $nameCommunityIdea = $community->getName();
+                            }
+                        }
 
                         $repository = $this->getDoctrine()->getRepository('ApiBundle:VoteUserIdea');
                         $voteUser = $repository->findOneBy(array('idUser' => $idUser, 'idIdea' => $idea->getId()));
@@ -140,6 +154,8 @@ class IdeaController extends Controller
                             'comments' => $tableComments,
                             'nbComments' => $nbComments,
                             'userCanComment' => $userCanComment,
+                            'idCommunityIdea' => $idCommunityIdea,
+                            'nameCommunityIdea' => $nameCommunityIdea,
                         );
                     }
                     return $this->get('service_data_response')->JsonResponse($tableIdeas);
@@ -273,7 +289,7 @@ class IdeaController extends Controller
                                 $repository = $this->getDoctrine()->getRepository('ApiBundle:UserCommunity');
                                 $userCanComment = $repository->findOneBy(array('idUser' => $idUser, 'idCommunity' => $idea->getIdCommunauty()));
 
-                           if($userCanComment || ($idea->getIdCommunauty() == "NULL")){
+                                if($userCanComment || ($idea->getIdCommunauty() == "NULL")){
                                     $userCanComment = true;
                                 }else{
                                     $userCanComment = false;
