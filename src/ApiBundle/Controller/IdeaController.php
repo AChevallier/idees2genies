@@ -122,9 +122,9 @@ class IdeaController extends Controller
                         $nbComments = $qb->getQuery()->getSingleScalarResult();
 
                         $repository = $this->getDoctrine()->getRepository('ApiBundle:UserCommunity');
-                        $userCanComment = $repository->findOneBy(array('idUser' => $idUser, 'idCommunity' => $idea->getId()));
+                        $userCanComment = $repository->findOneBy(array('idUser' => $idUser, 'idCommunity' => $idea->getIdCommunauty()));
 
-                        if($userCanComment || ($idea->getIdCommunauty() == "NULL")){
+                        if($userCanComment || ($idea->getIdCommunauty() == "")){
                             $userCanComment = true;
                         }else{
                             $userCanComment = false;
