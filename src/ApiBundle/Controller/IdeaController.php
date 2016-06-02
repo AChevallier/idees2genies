@@ -348,7 +348,7 @@ class IdeaController extends Controller
                     $em = $this->getDoctrine()->getEntityManager();
 
                     $qb = $em->createQueryBuilder()
-                        ->select('vui.idIdea AS idIdea, i.title AS title,u.name AS nameAutor, u.firstName AS firstNameAutor, i.publicateDate AS publicateDate, count(vui.id) AS nbVote')
+                        ->select('vui.idIdea AS idIdea, i.idCommunauty AS idCommunauty, i.title AS title,u.name AS nameAutor, u.firstName AS firstNameAutor, i.publicateDate AS publicateDate, count(vui.id) AS nbVote')
                         ->from('ApiBundle:VoteUserIdea', 'vui')
                         ->innerJoin('ApiBundle:Idea', 'i', 'WITH', 'i.id = vui.idIdea')
                         ->innerJoin('ApiBundle:User', 'u', 'WITH', 'i.idUser = u.id')
@@ -362,6 +362,20 @@ class IdeaController extends Controller
                     $tableIdeas = array();
                     foreach ($ideas as $idea) {
 
+                        $idCommunityIdea = "";
+                        $nameCommunityIdea = "";
+
+                        if($idea['idCommunauty']!= ""){
+                            $repository = $em->getRepository('ApiBundle:Community');
+                            $community = $repository->findOneBy(array('id' => $idea['idCommunauty']));
+
+                            if($community){
+                                $idCommunityIdea = $community->getId();
+                                $nameCommunityIdea = $community->getName();
+                            }
+                        }
+
+
                        $dateCreate = $idea['publicateDate'];
                         $date = $dateCreate->format('d/m/Y');
                         $heure = $dateCreate->format('H:i');
@@ -374,6 +388,8 @@ class IdeaController extends Controller
                             'publicateDate' => $date,
                             'publicateHour' => $heure,
                             'nbVote' => $idea['nbVote'],
+                            'idCommunityIdea' => $idCommunityIdea,
+                            'nameCommunityIdea' => $nameCommunityIdea,
                         );
                     }
                     return $this->get('service_data_response')->JsonResponse($tableIdeas);
