@@ -29,10 +29,6 @@ api_ping_inner:
 # User Controller
 #------------------------------------------------------
 
-api_user:
-    path:     /user
-    defaults: { _controller: ApiBundle:User:index }
-
 api_user_add:
     path:     /user/add
     defaults: { _controller: ApiBundle:User:add }

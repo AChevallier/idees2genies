@@ -11,11 +11,18 @@ use ApiBundle\Entity\Community;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 
-
+/**
+ * Cette classe permet de tester le serveur
+ */
 class PingController extends Controller
 {
 
-    // Fonction qui permet de pinger le serveur
+    /**
+     * Teste de réponse du web service
+     * @author Steve Vandycke, Alexandre Chevallier, Charles Grimont, Thibault Tichet
+     * @param Aucun paramètres
+     * @return JSON de retour du teste du serveur
+     */
     public function indexAction()
     {
 
@@ -29,7 +36,12 @@ class PingController extends Controller
         return $this->get('service_data_response')->JsonResponse($data);
     }
 
-    // Fonction pour tester le post
+    /**
+     * Tester le post
+     * @author Steve Vandycke, Alexandre Chevallier, Charles Grimont, Thibault Tichet
+     * @param JSON du test de post
+     * @return JSON de retour d'une liste d'idées
+     */
     public function postAction()
     {
 
@@ -47,7 +59,12 @@ class PingController extends Controller
         return $this->get('service_data_response')->JsonResponse($tableData);
     }
 
-    // Fonction pour tester inner join
+    /**
+     * Tester inner join
+     * @author Steve Vandycke, Alexandre Chevallier, Charles Grimont, Thibault Tichet
+     * @param Aucun paramètres
+     * @return JSON de retour du test du inner join
+     */
     public  function innerAction(){
 
         $em = $this->getDoctrine()->getManager();

@@ -10,10 +10,18 @@ use Symfony\Component\HttpFoundation\Response;
 use ApiBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Cette classe permet la gestion des communautés
+ */
 class CommunityController extends Controller
 {
 
-    // Liste les communautés
+    /**
+     * Lister les communautés
+     * @author Steve Vandycke, Alexandre Chevallier, Charles Grimont, Thibault Tichet
+     * @param Aucun paramètre (seulement le token dans le header)
+     * @return JSON de retourn d'une liste de communauté
+     */
     public function indexAction(Request $request)
     {
         try{
@@ -80,7 +88,12 @@ class CommunityController extends Controller
         }
     }
 
-    // Ajoute une communauté
+    /**
+     * Ajouter une communauté
+     * @author Steve Vandycke, Alexandre Chevallier, Charles Grimont, Thibault Tichet
+     * @param JSON qui contient les informations de la communauté à ajouter
+     * @return JSON de retourn d'un ajout de communauté
+     */
     public function addAction(Request $request)
     {
         try{
@@ -140,7 +153,12 @@ class CommunityController extends Controller
         }
     }
 
-    // Supprime une communauté
+    /**
+     * Supprimer une communauté
+     * @author Steve Vandycke, Alexandre Chevallier, Charles Grimont, Thibault Tichet
+     * @param Aucun paramètre, ID de la communauté en GET (seulement le token ainsi que l'ID)
+     * @return JSON de retour de suppression d'une communauté
+     */
     public function deleteAction(Request $request, $id)
     {
         try{
@@ -193,7 +211,12 @@ class CommunityController extends Controller
         }
     }
 
-    // Renvoie les communautées de l'utilisateur
+    /**
+     * Récupérer ses communautés
+     * @author Steve Vandycke, Alexandre Chevallier, Charles Grimont, Thibault Tichet
+     * @param Aucun paramètre, ID de la communauté en GET (seulement le token ainsi que l'ID)
+     * @return JSON de retour d'une liste de communautés
+     */
     public function myCommunitiesAction(Request $request)
     {
         try{
@@ -272,7 +295,12 @@ class CommunityController extends Controller
         }
     }
 
-    // Liste les communautés de l'utilisateur demandé
+    /**
+     * Récupérer la liste des communautés d'un utilisateur
+     * @author Steve Vandycke, Alexandre Chevallier, Charles Grimont, Thibault Tichet
+     * @param Aucun paramètre, ID de l'utilisateur en GET
+     * @return JSON de retour d'une liste de communautés
+     */
     public function userCommunitiesAction(Request $request, $id)
     {
         try{
@@ -328,7 +356,12 @@ class CommunityController extends Controller
         }
     }
 
-
+    /**
+     * Adhérer / annuler adhésion à une communauté
+     * @author Steve Vandycke, Alexandre Chevallier, Charles Grimont, Thibault Tichet
+     * @param JSON d'adhésion/annulation à une communauté
+     * @return JSON de retour d'adhésion ou d'annulation d'adhésion à une communauté
+     */
     public function joinAction(Request $request)
     {
         try{
@@ -399,7 +432,12 @@ class CommunityController extends Controller
         }
     }
 
-    // Récupère les information sur la communité demandée
+    /**
+     * Récupérer les informations d'une communauté
+     * @author Steve Vandycke, Alexandre Chevallier, Charles Grimont, Thibault Tichet
+     * @param JSON de récupération d'information d'une communauté
+     * @return JSON de retour d'informations d'une communauté
+     */
     public function getCommunityAction(Request $request)
     {
         try{

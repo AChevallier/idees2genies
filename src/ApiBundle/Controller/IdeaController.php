@@ -2,26 +2,28 @@
 
 namespace ApiBundle\Controller;
 
-    use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-    use Symfony\Component\Config\Definition\Exception\Exception;
-    use Symfony\Component\HttpFoundation\JsonResponse;
-    use ApiBundle\Entity\User;
-    use ApiBundle\Entity\Idea;
-    use ApiBundle\Entity\VoteUserIdea;
-    use ApiBundle\Entity\Community;
-    use ApiBundle\Entity\Comment;
-    use Symfony\Component\HttpFoundation\Response;
-    use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use ApiBundle\Entity\User;
+use ApiBundle\Entity\Idea;
+use ApiBundle\Entity\VoteUserIdea;
+use ApiBundle\Entity\Community;
+use ApiBundle\Entity\Comment;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 
-
+/**
+ * Cette classe permet la gestion des idées
+ */
 class IdeaController extends Controller
 {
 
     /**
-     * Fonction qui liste toutes les idées
+     * Lister les idées
      * @author Steve Vandycke, Alexandre Chevallier, Charles Grimont, Thibault Tichet
-     * @param Token utilisateur dans le header
-     * @return JSON Json de retour d'un utilisateur
+     * @param Aucun paramètres (seulement le token)
+     * @return JSON de retour d'une liste d'idées
      */
     public function indexAction(Request $request)
     {
@@ -176,7 +178,12 @@ class IdeaController extends Controller
         }
     }
 
-    // Fonction qui liste les idées d'une communauté
+    /**
+     * Lister les idées d'une communauté
+     * @author Steve Vandycke, Alexandre Chevallier, Charles Grimont, Thibault Tichet
+     * @param JSON de demande d'idées d'une communauté
+     * @return JSON de retour de la liste d'idées de la communauté
+     */
     public function ideasCommunityAction(Request $request)
     {
         try{
@@ -332,7 +339,12 @@ class IdeaController extends Controller
         }
     }
 
-    // Fonction qui liste le top 5
+    /**
+     * Lister le Top5 des idées
+     * @author Steve Vandycke, Alexandre Chevallier, Charles Grimont, Thibault Tichet
+     * @param Aucun paramètres (seulement le token)
+     * @return JSON de retour d'une liste des Top5 des idées
+     */
     public function top5Action(Request $request)
     {
         try{
@@ -408,7 +420,12 @@ class IdeaController extends Controller
         }
     }
 
-    // Fonction qui ajoute une idée
+    /**
+     * Ajouter une idée
+     * @author Steve Vandycke, Alexandre Chevallier, Charles Grimont, Thibault Tichet
+     * @param JSON d'ajout d'une idée
+     * @return JSON de retour d'ajout d'une idée
+     */
     public function addAction(Request $request)
     {
         try{
@@ -480,7 +497,12 @@ class IdeaController extends Controller
         }
     }
 
-    // Fontion qui permet de voter
+    /**
+     * Voter/annuler vote d'une idée
+     * @author Steve Vandycke, Alexandre Chevallier, Charles Grimont, Thibault Tichet
+     * @param JSON de vote/annuler vote d'une idée
+     * @return JSON de retour d'un vote/annulation vote d'une idée
+     */
     public function voteAction(Request $request)
     {
         try{

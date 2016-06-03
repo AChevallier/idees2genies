@@ -12,9 +12,18 @@ use ApiBundle\Entity\VoteUserComment;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
-
+/**
+ * Cette classe permet la gestion des commentaires
+ */
 class CommentController extends Controller
 {
+
+    /**
+     * Creation d’un utilisateur
+     * @author Steve Vandycke, Alexandre Chevallier, Charles Grimont, Thibault Tichet
+     * @param JSON d'ajout d'un commentaire
+     * @return JSON de retour d'ajout de commentaire
+     */
     public function addAction(Request $request)
     {
         try{
@@ -72,7 +81,12 @@ class CommentController extends Controller
         }
     }
 
-    // Fontion qui permet de voter un commentaire
+    /**
+     * Fonction qui permet de voter pour un commentaire
+     * @author Steve Vandycke, Alexandre Chevallier, Charles Grimont, Thibault Tichet
+     * @param JSON contenant l'ID du commentaire
+     * @return JSON de retour d'un vote pour un commentaire
+     */
     public function voteAction(Request $request)
     {
         try{

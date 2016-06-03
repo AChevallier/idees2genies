@@ -10,32 +10,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-
+/**
+ * Cette classe permet des gérer les utilisateurs
+ */
 class UserController extends Controller
 {
-
-    // Fonction homePage de user
-    public function indexAction()
-    {
-        $repository = $this->getDoctrine()->getRepository('ApiBundle:User');
-        //$users = $repository->findBy(array(), array('name' => 'ASC'),10);
-        $users = $repository->findAll();
-        $tableUsers = array();
-
-    	foreach ($users as $user) {
-            $tableUsers[] = array(
-        		'id' => $user->getId(),
-            	'name' => $user->getName(),
-            	'firstName' => $user->getFirstName(),
-                'email' => $user->getEmail(),
-                'administrator' => $user->getAdministrator(),
-        	);
-    	}
-
-        return $this->get('service_data_response')->JsonResponse($tableUsers);
-    }
-
-    // Fonction qui ajoute un utilisateur
+    /**
+     * Ajouter un utilisateur
+     * @author Steve Vandycke, Alexandre Chevallier, Charles Grimont, Thibault Tichet
+     * @param JSON d'ajout d'un utilisateur
+     * @return JSON de réponse d'ajout d'un utilisateur
+     */
     public function addAction(Request $request)
     {
         try{
@@ -75,7 +60,12 @@ class UserController extends Controller
         }
     }
 
-    // Fonction qui authentifie l'utilisateur
+    /**
+     * Authentification d'un utilisateur
+     * @author Steve Vandycke, Alexandre Chevallier, Charles Grimont, Thibault Tichet
+     * @param JSON de connexion utilisateur
+     * @return JSON de retour de connexion utilisateur
+     */
     public function loginAction(){
 
         try{
@@ -134,7 +124,12 @@ class UserController extends Controller
         }
     }
 
-    // Fonction qui teste la valididé du token
+    /**
+     * Tester la validité du token
+     * @author Steve Vandycke, Alexandre Chevallier, Charles Grimont, Thibault Tichet
+     * @param JSON du test de validité de token
+     * @return JSON de retour du test de validité de token
+     */
     public function isValideTokenAction(){
         try{
             $params = array();
@@ -181,7 +176,12 @@ class UserController extends Controller
         }
     }
 
-    // Fonction qui liste les utilisateurrs d'une communauté
+    /**
+     * Lister les utilisateurs d'une communauté
+     * @author Steve Vandycke, Alexandre Chevallier, Charles Grimont, Thibault Tichet
+     * @param JSON pour lister les utilisateur d'une commuanuté
+     * @return JSON de retour d'une liste d'utilisateurs d'une commuanuté
+     */
     public function usersCommunityAction(Request $request)
     {
         try{
