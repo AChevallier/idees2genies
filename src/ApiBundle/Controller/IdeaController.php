@@ -17,7 +17,12 @@ namespace ApiBundle\Controller;
 class IdeaController extends Controller
 {
 
-    // Fonction qui liste toutes les idées
+    /**
+     * Fonction qui liste toutes les idées
+     * @author Steve Vandycke, Alexandre Chevallier, Charles Grimont, Thibault Tichet
+     * @param Token utilisateur dans le header
+     * @return JSON Json de retour d'un utilisateur
+     */
     public function indexAction(Request $request)
     {
         try{
@@ -374,7 +379,6 @@ class IdeaController extends Controller
                                 $nameCommunityIdea = $community->getName();
                             }
                         }
-
 
                        $dateCreate = $idea['publicateDate'];
                         $date = $dateCreate->format('d/m/Y');

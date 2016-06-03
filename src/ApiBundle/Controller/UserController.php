@@ -15,10 +15,6 @@ class UserController extends Controller
 {
 
     // Fonction homePage de user
-
-
-
-
     public function indexAction()
     {
         $repository = $this->getDoctrine()->getRepository('ApiBundle:User');
@@ -47,14 +43,14 @@ class UserController extends Controller
             $data = json_decode($request->getContent(), true);
             $repository = $em->getRepository('ApiBundle:User');
 
-            if (!empty(isset($data['name'])) && !empty(isset($data['firstName'])) && !empty(isset($data['email'])) && !empty(isset($data['password'])) && ($data['administrator'] == "1" || $data['administrator'] == "0") && isset($data['administrator'])) {
+            if (!empty(isset($data['name'])) && !empty(isset($data['firstName'])) && !empty(isset($data['email'])) && !empty(isset($data['password']))) {
                 if (!$user = $repository->findOneBy(array('email' => $data['email']))) {
                     $a = new User();
                     $a->setFirstName($data['firstName']);
                     $a->setName($data['name']);
                     $a->setEmail($data['email']);
                     $a->setPassword(md5($data['password']));
-                    $a->setAdministrator($data['administrator']);
+                    $a->setAdministrator(0);
 
                     $em->persist($a);
                     $em->flush();

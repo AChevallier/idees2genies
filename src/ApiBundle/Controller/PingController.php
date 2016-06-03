@@ -14,6 +14,8 @@ use Doctrine\ORM\Query\Expr\Join;
 
 class PingController extends Controller
 {
+
+    // Fonction qui permet de pinger le serveur
     public function indexAction()
     {
 

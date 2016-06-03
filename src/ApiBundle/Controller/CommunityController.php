@@ -328,6 +328,7 @@ class CommunityController extends Controller
         }
     }
 
+
     public function joinAction(Request $request)
     {
         try{

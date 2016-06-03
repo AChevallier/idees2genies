@@ -14,6 +14,7 @@ api_homepage:
 api_ping:
     path:     /ping
     defaults: { _controller: ApiBundle:Ping:index }
+    methods:  [POST, GET]
 
 api_ping_post:
     path:     /ping/post
