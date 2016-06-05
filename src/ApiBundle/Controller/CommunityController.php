@@ -177,11 +177,48 @@ class CommunityController extends Controller
                     if($user->getAdministrator() == true) {
                         $data = json_decode($request->getContent(), true);
 
-                        if (!empty($id)) {
+                        if ($id != "") {
                             $repository = $em->getRepository('ApiBundle:Community');
 
                             if ($community = $repository->findOneBy(array('id' => $id))) {
 
+                                $repository = $em->getRepository('ApiBundle:UserCommunity');
+                                $usersCommunity = $repository->findBy(array('idCommunity' => $id));
+
+                                foreach($usersCommunity as $userCommunity){
+                                    $em->remove($userCommunity);
+                                    $em->flush();
+                                }
+
+                                $repository = $em->getRepository('ApiBundle:Idea');
+                                $ideas = $repository->findBy(array('idCommunauty' => $id));
+
+                                foreach($ideas as $idea){
+
+                                    $repository = $em->getRepository('ApiBundle:VoteUserIdea');
+                                    $votesUserIdea = $repository->findBy(array('idIdea' => $idea->getId()));
+                                    foreach($votesUserIdea as $voteUserIdea){
+                                        $em->remove($voteUserIdea);
+                                        $em->flush();
+                                    }
+
+                                    $repository = $em->getRepository('ApiBundle:Comment');
+                                    $commentsIdea = $repository->findBy(array('idIdea' => $idea->getId()));
+                                    foreach($commentsIdea as $commentIdea){
+
+                                        $repository = $em->getRepository('ApiBundle:VoteUserComment');
+                                        $votesUserComment = $repository->findBy(array('idComment' => $commentIdea->getId()));
+
+                                        foreach($votesUserComment as $voteUserComment){
+                                            $em->remove($voteUserComment);
+                                            $em->flush();
+                                        }
+                                        $em->remove($commentIdea);
+                                        $em->flush();
+                                    }
+                                    $em->remove($idea);
+                                    $em->flush();
+                                }
                                 $em->remove($community);
                                 $em->flush();
 

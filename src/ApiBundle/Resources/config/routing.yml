@@ -89,6 +89,7 @@ api_community_get_community:
     defaults: { _controller: ApiBundle:Community:getCommunity }
     methods:  [POST]
 
+
 #------------------------------------------------------
 # Idea Controller
 #------------------------------------------------------
