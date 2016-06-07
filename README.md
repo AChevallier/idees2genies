@@ -14,6 +14,6 @@ Vous devez :
  - Venir chercher le fichier de base de données dans le dossier SQL et l'importer dans la base de données nouvellement crée.
  - Installer les dépendances en vous plaçant à racine. Exécuter `composer install`
 
- ##Document de l'API
+## Document de l'API
 
  {url}/api
