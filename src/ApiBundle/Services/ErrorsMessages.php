@@ -62,6 +62,6 @@ class ErrorsMessages
         $reponse = $arr = array('error' => $arr);
         $reponse = json_encode($reponse,JSON_UNESCAPED_UNICODE);
 
-        return new JsonResponse($reponse, 200);
+        return new JsonResponse($reponse, 500);
     }
 }
