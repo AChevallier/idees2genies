@@ -12,7 +12,7 @@ __Dans notre cas, nous allons utiliser une base de données de teste avec des do
 Vous devez :
  - Créer une base de données du nom de *__symfonyIdees__*
  - Venir chercher le fichier de base de données dans le dossier SQL et l'importer dans la base de données nouvellement crée.
- - Installer le `.phar`
+ - Installer les dépendances en vous plaçant à racine. Exécuter `composer install`
 
  ##Document de l'API
 
