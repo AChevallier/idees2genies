@@ -1,4 +1,4 @@
-# idees2geniesAngu
+# idees2geniesSymf
 
 ## Synopsis
 
